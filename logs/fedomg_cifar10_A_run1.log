@@ -1,0 +1,103 @@
+nohup: ignoring input
+/home/cjq/anaconda3/envs/fedomg/lib/python3.10/site-packages/torch/cuda/__init__.py:619: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+==================================================
+Algorithm: FedOMG
+Local batch size: 100
+Local steps: 5
+Local learning rate: 0.05
+Local learning rate decay: False
+Total number of clients: 100
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: Cifar10
+Number of classes: 10
+Backbone: cnn
+Using device: cuda:0
+Using DP: False
+Auto break: False
+Global rounds: 800
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 1
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=1600, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 100
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate global model
+Averaged Train Loss: 2.3033
+Averaged Test Accurancy: 0.0928
+Averaged Test AUC: 0.4894
+Std Test Accurancy: 0.1434
+Std Test AUC: 0.2233
+gradient tensor: torch.Size([878538, 100])
+memories: (100, 878538) | gradient: (878538,)
+P: (100, 100) | q: (100,) | G: (100, 100) | h: (100,)
+------------------------- time cost ------------------------- 16.511008739471436
+
+-------------Round number: 1-------------
+
+Evaluate global model
+Averaged Train Loss: 19734.4976
+Averaged Test Accurancy: 0.0994
+Averaged Test AUC: 0.5095
+Std Test Accurancy: 0.2808
+Std Test AUC: 0.2527
+gradient tensor: torch.Size([878538, 100])
+memories: (100, 878538) | gradient: (878538,)
+P: (100, 100) | q: (100,) | G: (100, 100) | h: (100,)
+------------------------- time cost ------------------------- 16.317343711853027
+
+-------------Round number: 2-------------
+
+Evaluate global model
+Traceback (most recent call last):
+  File "/home/cjq/Project/FedOMG/system/main.py", line 360, in <module>
+    run(args)
+  File "/home/cjq/Project/FedOMG/system/main.py", line 200, in run
+    server.train()
+  File "/home/cjq/Project/FedOMG/system/flcore/servers/server_OMG.py", line 48, in train
+    self.evaluate()
+  File "/home/cjq/Project/FedOMG/system/flcore/servers/serverbase.py", line 382, in evaluate
+    stats = self.test_metrics()
+  File "/home/cjq/Project/FedOMG/system/flcore/servers/serverbase.py", line 330, in test_metrics
+    ct, ns, auc = c.test_metrics()
+  File "/home/cjq/Project/FedOMG/system/flcore/clients/clientbase.py", line 159, in test_metrics
+    auc = metrics.roc_auc_score(y_true, y_prob, average='micro')
+  File "/home/cjq/anaconda3/envs/fedomg/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 213, in wrapper
+    return func(*args, **kwargs)
+  File "/home/cjq/anaconda3/envs/fedomg/lib/python3.10/site-packages/sklearn/metrics/_ranking.py", line 619, in roc_auc_score
+    y_score = check_array(y_score, ensure_2d=False)
+  File "/home/cjq/anaconda3/envs/fedomg/lib/python3.10/site-packages/sklearn/utils/validation.py", line 1064, in check_array
+    _assert_all_finite(
+  File "/home/cjq/anaconda3/envs/fedomg/lib/python3.10/site-packages/sklearn/utils/validation.py", line 123, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/cjq/anaconda3/envs/fedomg/lib/python3.10/site-packages/sklearn/utils/validation.py", line 172, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains NaN.
