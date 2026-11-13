@@ -25,7 +25,12 @@ def get_all_results_for_one_algo(algorithm="", dataset="", goal="", times=10):
 
 
 def read_data_then_delete(file_name, delete=False):
-    file_path = "/home/id202388548/pFL/results/" + file_name + ".h5"
+    project_root = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../../")
+    )
+    file_path = os.path.join(
+        project_root, "results", file_name + ".h5"
+    )
 
     with h5py.File(file_path, 'r') as hf:
         rs_test_acc = np.array(hf.get('rs_test_acc'))

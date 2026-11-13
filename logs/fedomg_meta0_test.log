@@ -1,0 +1,542 @@
+/home/cjq/anaconda3/envs/fedomg/lib/python3.10/site-packages/torch/cuda/__init__.py:619: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+==================================================
+Algorithm: FedOMG
+Local batch size: 16
+Local steps: 5
+Local learning rate: 0.005
+Local learning rate decay: False
+Total number of clients: 100
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Dataset: Cifar10
+Number of classes: 10
+Backbone: cnn
+Using device: cuda:0
+Using DP: False
+Auto break: False
+Global rounds: 1
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 1
+==================================================
+
+============= Running time: 0th =============
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=1600, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 100
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate global model
+Averaged Train Loss: 2.3038
+Averaged Test Accurancy: 0.0928
+Averaged Test AUC: 0.4894
+Std Test Accurancy: 0.1434
+Std Test AUC: 0.2233
+\n========== DIAG: CLIENT MODELS ==========
+[DIAG] Global model before OMG: shape=(878538,), norm=1.436090e+01, mean=1.622690e-05, max=1.154516e-01, finite=878538/878538
+Uploaded clients: 100
+[DIAG] Client 0 model: shape=(878538,), norm=1.441170e+01, mean=2.016856e-04, max=1.746749e-01, finite=878538/878538
+[DIAG] Client 1 model: shape=(878538,), norm=1.441036e+01, mean=2.352436e-04, max=1.308037e-01, finite=878538/878538
+[DIAG] Client 2 model: shape=(878538,), norm=1.439389e+01, mean=1.637839e-04, max=1.324182e-01, finite=878538/878538
+[DIAG] Client 3 model: shape=(878538,), norm=1.438765e+01, mean=1.169536e-04, max=1.280295e-01, finite=878538/878538
+[DIAG] Client 4 model: shape=(878538,), norm=1.439002e+01, mean=1.420777e-04, max=1.527826e-01, finite=878538/878538
+[DIAG] Client 5 model: shape=(878538,), norm=1.440538e+01, mean=2.001664e-04, max=1.662872e-01, finite=878538/878538
+[DIAG] Client 6 model: shape=(878538,), norm=1.440157e+01, mean=1.798611e-04, max=1.450845e-01, finite=878538/878538
+[DIAG] Client 7 model: shape=(878538,), norm=1.438449e+01, mean=1.262094e-04, max=1.216744e-01, finite=878538/878538
+[DIAG] Client 8 model: shape=(878538,), norm=1.436401e+01, mean=3.715605e-05, max=1.157795e-01, finite=878538/878538
+[DIAG] Client 9 model: shape=(878538,), norm=1.440217e+01, mean=1.789957e-04, max=1.650853e-01, finite=878538/878538
+[DIAG] Client 10 model: shape=(878538,), norm=1.440503e+01, mean=2.139107e-04, max=1.301630e-01, finite=878538/878538
+[DIAG] Client 11 model: shape=(878538,), norm=1.439928e+01, mean=1.611873e-04, max=1.354016e-01, finite=878538/878538
+[DIAG] Client 12 model: shape=(878538,), norm=1.440114e+01, mean=1.859711e-04, max=1.408604e-01, finite=878538/878538
+[DIAG] Client 13 model: shape=(878538,), norm=1.437477e+01, mean=1.002803e-04, max=1.201718e-01, finite=878538/878538
+[DIAG] Client 14 model: shape=(878538,), norm=1.436211e+01, mean=2.464419e-05, max=1.156479e-01, finite=878538/878538
+[DIAG] Client 15 model: shape=(878538,), norm=1.440863e+01, mean=2.383236e-04, max=1.355792e-01, finite=878538/878538
+[DIAG] Client 16 model: shape=(878538,), norm=1.437393e+01, mean=9.517265e-05, max=1.190175e-01, finite=878538/878538
+[DIAG] Client 17 model: shape=(878538,), norm=1.441088e+01, mean=2.217235e-04, max=1.544720e-01, finite=878538/878538
+[DIAG] Client 18 model: shape=(878538,), norm=1.440485e+01, mean=2.089771e-04, max=1.331087e-01, finite=878538/878538
+[DIAG] Client 19 model: shape=(878538,), norm=1.436199e+01, mean=2.041606e-05, max=1.156389e-01, finite=878538/878538
+[DIAG] Client 20 model: shape=(878538,), norm=1.440230e+01, mean=2.103637e-04, max=1.470199e-01, finite=878538/878538
+[DIAG] Client 21 model: shape=(878538,), norm=1.440777e+01, mean=2.126766e-04, max=1.363257e-01, finite=878538/878538
+[DIAG] Client 22 model: shape=(878538,), norm=1.441396e+01, mean=2.071473e-04, max=1.376100e-01, finite=878538/878538
+[DIAG] Client 23 model: shape=(878538,), norm=1.436573e+01, mean=4.000484e-05, max=1.163296e-01, finite=878538/878538
+[DIAG] Client 24 model: shape=(878538,), norm=1.441212e+01, mean=2.151669e-04, max=1.370141e-01, finite=878538/878538
+[DIAG] Client 25 model: shape=(878538,), norm=1.440466e+01, mean=1.809145e-04, max=1.331257e-01, finite=878538/878538
+[DIAG] Client 26 model: shape=(878538,), norm=1.438526e+01, mean=1.454990e-04, max=1.248188e-01, finite=878538/878538
+[DIAG] Client 27 model: shape=(878538,), norm=1.440306e+01, mean=1.923704e-04, max=1.276052e-01, finite=878538/878538
+[DIAG] Client 28 model: shape=(878538,), norm=1.436223e+01, mean=2.312081e-05, max=1.157099e-01, finite=878538/878538
+[DIAG] Client 29 model: shape=(878538,), norm=1.440504e+01, mean=1.992629e-04, max=1.384374e-01, finite=878538/878538
+[DIAG] Client 30 model: shape=(878538,), norm=1.441477e+01, mean=2.478675e-04, max=1.495836e-01, finite=878538/878538
+[DIAG] Client 31 model: shape=(878538,), norm=1.436146e+01, mean=1.735840e-05, max=1.156365e-01, finite=878538/878538
+[DIAG] Client 32 model: shape=(878538,), norm=1.439713e+01, mean=1.902616e-04, max=1.288632e-01, finite=878538/878538
+[DIAG] Client 33 model: shape=(878538,), norm=1.438404e+01, mean=1.404094e-04, max=1.222407e-01, finite=878538/878538
+[DIAG] Client 34 model: shape=(878538,), norm=1.440316e+01, mean=1.695640e-04, max=1.422240e-01, finite=878538/878538
+[DIAG] Client 35 model: shape=(878538,), norm=1.441526e+01, mean=2.232206e-04, max=1.494053e-01, finite=878538/878538
+[DIAG] Client 36 model: shape=(878538,), norm=1.436368e+01, mean=3.346417e-05, max=1.157297e-01, finite=878538/878538
+[DIAG] Client 37 model: shape=(878538,), norm=1.436190e+01, mean=2.010718e-05, max=1.154397e-01, finite=878538/878538
+[DIAG] Client 38 model: shape=(878538,), norm=1.440059e+01, mean=1.859596e-04, max=1.295601e-01, finite=878538/878538
+[DIAG] Client 39 model: shape=(878538,), norm=1.443135e+01, mean=2.206680e-04, max=1.345369e-01, finite=878538/878538
+[DIAG] Client 40 model: shape=(878538,), norm=1.439518e+01, mean=1.639786e-04, max=1.312400e-01, finite=878538/878538
+[DIAG] Client 41 model: shape=(878538,), norm=1.440728e+01, mean=2.008942e-04, max=1.696657e-01, finite=878538/878538
+[DIAG] Client 42 model: shape=(878538,), norm=1.438607e+01, mean=1.202981e-04, max=1.258224e-01, finite=878538/878538
+[DIAG] Client 43 model: shape=(878538,), norm=1.439829e+01, mean=1.863212e-04, max=1.271078e-01, finite=878538/878538
+[DIAG] Client 44 model: shape=(878538,), norm=1.440419e+01, mean=1.720224e-04, max=1.350937e-01, finite=878538/878538
+[DIAG] Client 45 model: shape=(878538,), norm=1.436306e+01, mean=2.801300e-05, max=1.157008e-01, finite=878538/878538
+[DIAG] Client 46 model: shape=(878538,), norm=1.439514e+01, mean=1.807930e-04, max=1.527394e-01, finite=878538/878538
+[DIAG] Client 47 model: shape=(878538,), norm=1.441033e+01, mean=2.347140e-04, max=1.451125e-01, finite=878538/878538
+[DIAG] Client 48 model: shape=(878538,), norm=1.438887e+01, mean=1.247573e-04, max=1.286777e-01, finite=878538/878538
+[DIAG] Client 49 model: shape=(878538,), norm=1.436264e+01, mean=2.388059e-05, max=1.155831e-01, finite=878538/878538
+[DIAG] Client 50 model: shape=(878538,), norm=1.439014e+01, mean=1.300728e-04, max=1.280882e-01, finite=878538/878538
+[DIAG] Client 51 model: shape=(878538,), norm=1.436184e+01, mean=2.595613e-05, max=1.156428e-01, finite=878538/878538
+[DIAG] Client 52 model: shape=(878538,), norm=1.439472e+01, mean=1.824342e-04, max=1.322522e-01, finite=878538/878538
+[DIAG] Client 53 model: shape=(878538,), norm=1.441175e+01, mean=2.182257e-04, max=1.343473e-01, finite=878538/878538
+[DIAG] Client 54 model: shape=(878538,), norm=1.440576e+01, mean=1.860537e-04, max=1.342051e-01, finite=878538/878538
+[DIAG] Client 55 model: shape=(878538,), norm=1.440724e+01, mean=2.337519e-04, max=1.342322e-01, finite=878538/878538
+[DIAG] Client 56 model: shape=(878538,), norm=1.436245e+01, mean=2.827471e-05, max=1.155598e-01, finite=878538/878538
+[DIAG] Client 57 model: shape=(878538,), norm=1.440905e+01, mean=2.314633e-04, max=1.425729e-01, finite=878538/878538
+[DIAG] Client 58 model: shape=(878538,), norm=1.440944e+01, mean=2.073789e-04, max=1.410870e-01, finite=878538/878538
+[DIAG] Client 59 model: shape=(878538,), norm=1.440191e+01, mean=1.948003e-04, max=1.340091e-01, finite=878538/878538
+[DIAG] Client 60 model: shape=(878538,), norm=1.439488e+01, mean=1.716453e-04, max=1.296369e-01, finite=878538/878538
+[DIAG] Client 61 model: shape=(878538,), norm=1.440391e+01, mean=1.715421e-04, max=1.331316e-01, finite=878538/878538
+[DIAG] Client 62 model: shape=(878538,), norm=1.442364e+01, mean=2.521924e-04, max=1.324123e-01, finite=878538/878538
+[DIAG] Client 63 model: shape=(878538,), norm=1.441625e+01, mean=2.421739e-04, max=1.362092e-01, finite=878538/878538
+[DIAG] Client 64 model: shape=(878538,), norm=1.440509e+01, mean=2.035619e-04, max=1.286271e-01, finite=878538/878538
+[DIAG] Client 65 model: shape=(878538,), norm=1.438612e+01, mean=1.545402e-04, max=1.252073e-01, finite=878538/878538
+[DIAG] Client 66 model: shape=(878538,), norm=1.439120e+01, mean=1.606206e-04, max=1.275335e-01, finite=878538/878538
+[DIAG] Client 67 model: shape=(878538,), norm=1.439928e+01, mean=1.884925e-04, max=1.393738e-01, finite=878538/878538
+[DIAG] Client 68 model: shape=(878538,), norm=1.440161e+01, mean=1.876393e-04, max=1.338349e-01, finite=878538/878538
+[DIAG] Client 69 model: shape=(878538,), norm=1.438634e+01, mean=1.426008e-04, max=1.243814e-01, finite=878538/878538
+[DIAG] Client 70 model: shape=(878538,), norm=1.439095e+01, mean=1.504233e-04, max=1.244101e-01, finite=878538/878538
+[DIAG] Client 71 model: shape=(878538,), norm=1.442694e+01, mean=2.384684e-04, max=1.714525e-01, finite=878538/878538
+[DIAG] Client 72 model: shape=(878538,), norm=1.440069e+01, mean=1.674981e-04, max=1.289973e-01, finite=878538/878538
+[DIAG] Client 73 model: shape=(878538,), norm=1.436416e+01, mean=3.250579e-05, max=1.161044e-01, finite=878538/878538
+[DIAG] Client 74 model: shape=(878538,), norm=1.440583e+01, mean=2.042375e-04, max=1.438868e-01, finite=878538/878538
+[DIAG] Client 75 model: shape=(878538,), norm=1.439988e+01, mean=1.839256e-04, max=1.357368e-01, finite=878538/878538
+[DIAG] Client 76 model: shape=(878538,), norm=1.439108e+01, mean=1.606101e-04, max=1.420624e-01, finite=878538/878538
+[DIAG] Client 77 model: shape=(878538,), norm=1.438473e+01, mean=1.135501e-04, max=1.256906e-01, finite=878538/878538
+[DIAG] Client 78 model: shape=(878538,), norm=1.439470e+01, mean=1.724238e-04, max=1.271939e-01, finite=878538/878538
+[DIAG] Client 79 model: shape=(878538,), norm=1.441816e+01, mean=2.171061e-04, max=1.771945e-01, finite=878538/878538
+[DIAG] Client 80 model: shape=(878538,), norm=1.436306e+01, mean=3.180132e-05, max=1.158809e-01, finite=878538/878538
+[DIAG] Client 81 model: shape=(878538,), norm=1.437012e+01, mean=7.022123e-05, max=1.175535e-01, finite=878538/878538
+[DIAG] Client 82 model: shape=(878538,), norm=1.441149e+01, mean=2.377201e-04, max=1.463210e-01, finite=878538/878538
+[DIAG] Client 83 model: shape=(878538,), norm=1.439967e+01, mean=1.959925e-04, max=1.285582e-01, finite=878538/878538
+[DIAG] Client 84 model: shape=(878538,), norm=1.441084e+01, mean=2.242367e-04, max=1.527996e-01, finite=878538/878538
+[DIAG] Client 85 model: shape=(878538,), norm=1.440338e+01, mean=1.964246e-04, max=1.312328e-01, finite=878538/878538
+[DIAG] Client 86 model: shape=(878538,), norm=1.439710e+01, mean=1.874926e-04, max=1.258841e-01, finite=878538/878538
+[DIAG] Client 87 model: shape=(878538,), norm=1.441204e+01, mean=2.198736e-04, max=1.289629e-01, finite=878538/878538
+[DIAG] Client 88 model: shape=(878538,), norm=1.436453e+01, mean=3.582740e-05, max=1.161554e-01, finite=878538/878538
+[DIAG] Client 89 model: shape=(878538,), norm=1.439352e+01, mean=1.449182e-04, max=1.294686e-01, finite=878538/878538
+[DIAG] Client 90 model: shape=(878538,), norm=1.437823e+01, mean=1.090045e-04, max=1.282789e-01, finite=878538/878538
+[DIAG] Client 91 model: shape=(878538,), norm=1.436103e+01, mean=1.737689e-05, max=1.154683e-01, finite=878538/878538
+[DIAG] Client 92 model: shape=(878538,), norm=1.437358e+01, mean=9.522135e-05, max=1.192129e-01, finite=878538/878538
+[DIAG] Client 93 model: shape=(878538,), norm=1.438166e+01, mean=1.207639e-04, max=1.362557e-01, finite=878538/878538
+[DIAG] Client 94 model: shape=(878538,), norm=1.442524e+01, mean=2.641451e-04, max=1.435443e-01, finite=878538/878538
+[DIAG] Client 95 model: shape=(878538,), norm=1.438430e+01, mean=1.349969e-04, max=1.245992e-01, finite=878538/878538
+[DIAG] Client 96 model: shape=(878538,), norm=1.440710e+01, mean=2.019203e-04, max=1.680059e-01, finite=878538/878538
+[DIAG] Client 97 model: shape=(878538,), norm=1.436194e+01, mean=2.284564e-05, max=1.155448e-01, finite=878538/878538
+[DIAG] Client 98 model: shape=(878538,), norm=1.440373e+01, mean=2.093753e-04, max=1.536888e-01, finite=878538/878538
+[DIAG] Client 99 model: shape=(878538,), norm=1.440159e+01, mean=1.669501e-04, max=1.316544e-01, finite=878538/878538
+========== END CLIENT DIAGNOSTICS ==========
+\n========== DIAG: CLIENT GRADIENTS ==========
+[DIAG] All domain gradients: shape=(878538, 100), norm=6.787700e+00, mean=1.398241e-04, max=1.866943e-01, finite=87853800/87853800
+[DIAG] Client gradient 0: shape=(878538,), norm=8.795682e-01, mean=1.854587e-04, max=1.841747e-01, finite=878538/878538
+[DIAG] Client gradient 1: shape=(878538,), norm=8.129764e-01, mean=2.190168e-04, max=8.251562e-02, finite=878538/878538
+[DIAG] Client gradient 2: shape=(878538,), norm=6.747597e-01, mean=1.475570e-04, max=1.434779e-01, finite=878538/878538
+[DIAG] Client gradient 3: shape=(878538,), norm=6.068129e-01, mean=1.007267e-04, max=1.226329e-01, finite=878538/878538
+[DIAG] Client gradient 4: shape=(878538,), norm=6.257799e-01, mean=1.258508e-04, max=1.401705e-01, finite=878538/878538
+[DIAG] Client gradient 5: shape=(878538,), norm=8.176258e-01, mean=1.839394e-04, max=1.536750e-01, finite=878538/878538
+[DIAG] Client gradient 6: shape=(878538,), norm=7.618998e-01, mean=1.636342e-04, max=1.324724e-01, finite=878538/878538
+[DIAG] Client gradient 7: shape=(878538,), norm=5.291616e-01, mean=1.099825e-04, max=1.028516e-01, finite=878538/878538
+[DIAG] Client gradient 8: shape=(878538,), norm=1.722325e-01, mean=2.092914e-05, max=6.656985e-02, finite=878538/878538
+[DIAG] Client gradient 9: shape=(878538,), norm=7.682211e-01, mean=1.627688e-04, max=1.524732e-01, finite=878538/878538
+[DIAG] Client gradient 10: shape=(878538,), norm=7.973300e-01, mean=1.976838e-04, max=1.267703e-01, finite=878538/878538
+[DIAG] Client gradient 11: shape=(878538,), norm=7.416248e-01, mean=1.449604e-04, max=1.491457e-01, finite=878538/878538
+[DIAG] Client gradient 12: shape=(878538,), norm=7.297499e-01, mean=1.697442e-04, max=1.161945e-01, finite=878538/878538
+[DIAG] Client gradient 13: shape=(878538,), norm=3.859345e-01, mean=8.405340e-05, max=9.740444e-02, finite=878538/878538
+[DIAG] Client gradient 14: shape=(878538,), norm=9.548698e-02, mean=8.417284e-06, max=3.454300e-02, finite=878538/878538
+[DIAG] Client gradient 15: shape=(878538,), norm=8.302018e-01, mean=2.220967e-04, max=1.414633e-01, finite=878538/878538
+[DIAG] Client gradient 16: shape=(878538,), norm=3.849116e-01, mean=7.894575e-05, max=1.085327e-01, finite=878538/878538
+[DIAG] Client gradient 17: shape=(878538,), norm=8.754872e-01, mean=2.054966e-04, max=1.498266e-01, finite=878538/878538
+[DIAG] Client gradient 18: shape=(878538,), norm=7.643278e-01, mean=1.927502e-04, max=1.145753e-01, finite=878538/878538
+[DIAG] Client gradient 19: shape=(878538,), norm=1.316977e-01, mean=4.189149e-06, max=5.873827e-02, finite=878538/878538
+[DIAG] Client gradient 20: shape=(878538,), norm=7.670738e-01, mean=1.941368e-04, max=1.532438e-01, finite=878538/878538
+[DIAG] Client gradient 21: shape=(878538,), norm=8.244075e-01, mean=1.964497e-04, max=1.585072e-01, finite=878538/878538
+[DIAG] Client gradient 22: shape=(878538,), norm=8.657835e-01, mean=1.909204e-04, max=1.362060e-01, finite=878538/878538
+[DIAG] Client gradient 23: shape=(878538,), norm=2.401386e-01, mean=2.377793e-05, max=6.014572e-02, finite=878538/878538
+[DIAG] Client gradient 24: shape=(878538,), norm=8.617214e-01, mean=1.989399e-04, max=1.134108e-01, finite=878538/878538
+[DIAG] Client gradient 25: shape=(878538,), norm=7.967423e-01, mean=1.646876e-04, max=1.004501e-01, finite=878538/878538
+[DIAG] Client gradient 26: shape=(878538,), norm=5.618449e-01, mean=1.292721e-04, max=1.201301e-01, finite=878538/878538
+[DIAG] Client gradient 27: shape=(878538,), norm=7.751125e-01, mean=1.761435e-04, max=1.138281e-01, finite=878538/878538
+[DIAG] Client gradient 28: shape=(878538,), norm=1.247203e-01, mean=6.893903e-06, max=4.730053e-02, finite=878538/878538
+[DIAG] Client gradient 29: shape=(878538,), norm=7.958284e-01, mean=1.830360e-04, max=1.243087e-01, finite=878538/878538
+[DIAG] Client gradient 30: shape=(878538,), norm=8.842584e-01, mean=2.316406e-04, max=1.597063e-01, finite=878538/878538
+[DIAG] Client gradient 31: shape=(878538,), norm=1.088664e-01, mean=1.131495e-06, max=4.110170e-02, finite=878538/878538
+[DIAG] Client gradient 32: shape=(878538,), norm=6.940143e-01, mean=1.740347e-04, max=1.176575e-01, finite=878538/878538
+[DIAG] Client gradient 33: shape=(878538,), norm=5.343801e-01, mean=1.241825e-04, max=1.238797e-01, finite=878538/878538
+[DIAG] Client gradient 34: shape=(878538,), norm=7.882064e-01, mean=1.533371e-04, max=1.500592e-01, finite=878538/878538
+[DIAG] Client gradient 35: shape=(878538,), norm=8.524202e-01, mean=2.069937e-04, max=1.393569e-01, finite=878538/878538
+[DIAG] Client gradient 36: shape=(878538,), norm=1.506699e-01, mean=1.723726e-05, max=5.326183e-02, finite=878538/878538
+[DIAG] Client gradient 37: shape=(878538,), norm=1.209466e-01, mean=3.880270e-06, max=5.100419e-02, finite=878538/878538
+[DIAG] Client gradient 38: shape=(878538,), norm=7.488465e-01, mean=1.697327e-04, max=9.218291e-02, finite=878538/878538
+[DIAG] Client gradient 39: shape=(878538,), norm=1.004437e+00, mean=2.044411e-04, max=1.249429e-01, finite=878538/878538
+[DIAG] Client gradient 40: shape=(878538,), norm=6.848706e-01, mean=1.477517e-04, max=7.852760e-02, finite=878538/878538
+[DIAG] Client gradient 41: shape=(878538,), norm=8.198555e-01, mean=1.846673e-04, max=1.570536e-01, finite=878538/878538
+[DIAG] Client gradient 42: shape=(878538,), norm=5.842389e-01, mean=1.040712e-04, max=1.241365e-01, finite=878538/878538
+[DIAG] Client gradient 43: shape=(878538,), norm=7.165172e-01, mean=1.700943e-04, max=1.234235e-01, finite=878538/878538
+[DIAG] Client gradient 44: shape=(878538,), norm=7.878082e-01, mean=1.557955e-04, max=1.021923e-01, finite=878538/878538
+[DIAG] Client gradient 45: shape=(878538,), norm=1.270973e-01, mean=1.178610e-05, max=4.706017e-02, finite=878538/878538
+[DIAG] Client gradient 46: shape=(878538,), norm=6.881335e-01, mean=1.645661e-04, max=1.510900e-01, finite=878538/878538
+[DIAG] Client gradient 47: shape=(878538,), norm=8.383862e-01, mean=2.184870e-04, max=1.559852e-01, finite=878538/878538
+[DIAG] Client gradient 48: shape=(878538,), norm=6.213288e-01, mean=1.085304e-04, max=1.423889e-01, finite=878538/878538
+[DIAG] Client gradient 49: shape=(878538,), norm=1.473425e-01, mean=7.653682e-06, max=5.979811e-02, finite=878538/878538
+[DIAG] Client gradient 50: shape=(878538,), norm=6.430346e-01, mean=1.138459e-04, max=1.362863e-01, finite=878538/878538
+[DIAG] Client gradient 51: shape=(878538,), norm=1.052309e-01, mean=9.729218e-06, max=4.058514e-02, finite=878538/878538
+[DIAG] Client gradient 52: shape=(878538,), norm=6.695216e-01, mean=1.662073e-04, max=1.438534e-01, finite=878538/878538
+[DIAG] Client gradient 53: shape=(878538,), norm=8.335343e-01, mean=2.019988e-04, max=1.096814e-01, finite=878538/878538
+[DIAG] Client gradient 54: shape=(878538,), norm=7.864638e-01, mean=1.698268e-04, max=9.704742e-02, finite=878538/878538
+[DIAG] Client gradient 55: shape=(878538,), norm=8.148130e-01, mean=2.175250e-04, max=1.401166e-01, finite=878538/878538
+[DIAG] Client gradient 56: shape=(878538,), norm=1.214501e-01, mean=1.204780e-05, max=4.844707e-02, finite=878538/878538
+[DIAG] Client gradient 57: shape=(878538,), norm=8.248796e-01, mean=2.152364e-04, max=1.552003e-01, finite=878538/878538
+[DIAG] Client gradient 58: shape=(878538,), norm=8.143989e-01, mean=1.911520e-04, max=1.225536e-01, finite=878538/878538
+[DIAG] Client gradient 59: shape=(878538,), norm=7.631141e-01, mean=1.785734e-04, max=1.546633e-01, finite=878538/878538
+[DIAG] Client gradient 60: shape=(878538,), norm=6.546847e-01, mean=1.554183e-04, max=9.501328e-02, finite=878538/878538
+[DIAG] Client gradient 61: shape=(878538,), norm=7.638305e-01, mean=1.553152e-04, max=1.151274e-01, finite=878538/878538
+[DIAG] Client gradient 62: shape=(878538,), norm=9.294932e-01, mean=2.359655e-04, max=1.249083e-01, finite=878538/878538
+[DIAG] Client gradient 63: shape=(878538,), norm=8.824460e-01, mean=2.259470e-04, max=1.116646e-01, finite=878538/878538
+[DIAG] Client gradient 64: shape=(878538,), norm=7.629237e-01, mean=1.873350e-04, max=9.896238e-02, finite=878538/878538
+[DIAG] Client gradient 65: shape=(878538,), norm=5.697275e-01, mean=1.383133e-04, max=1.238361e-01, finite=878538/878538
+[DIAG] Client gradient 66: shape=(878538,), norm=6.154892e-01, mean=1.443936e-04, max=1.028675e-01, finite=878538/878538
+[DIAG] Client gradient 67: shape=(878538,), norm=7.363171e-01, mean=1.722656e-04, max=1.142411e-01, finite=878538/878538
+[DIAG] Client gradient 68: shape=(878538,), norm=7.404757e-01, mean=1.714124e-04, max=1.071610e-01, finite=878538/878538
+[DIAG] Client gradient 69: shape=(878538,), norm=5.446176e-01, mean=1.263739e-04, max=9.971540e-02, finite=878538/878538
+[DIAG] Client gradient 70: shape=(878538,), norm=6.238332e-01, mean=1.341964e-04, max=1.062303e-01, finite=878538/878538
+[DIAG] Client gradient 71: shape=(878538,), norm=1.017790e+00, mean=2.222415e-04, max=1.564324e-01, finite=878538/878538
+[DIAG] Client gradient 72: shape=(878538,), norm=7.548599e-01, mean=1.512712e-04, max=1.111069e-01, finite=878538/878538
+[DIAG] Client gradient 73: shape=(878538,), norm=2.060741e-01, mean=1.627889e-05, max=8.757892e-02, finite=878538/878538
+[DIAG] Client gradient 74: shape=(878538,), norm=8.030322e-01, mean=1.880106e-04, max=1.409565e-01, finite=878538/878538
+[DIAG] Client gradient 75: shape=(878538,), norm=7.358901e-01, mean=1.676987e-04, max=1.214491e-01, finite=878538/878538
+[DIAG] Client gradient 76: shape=(878538,), norm=6.421384e-01, mean=1.443831e-04, max=1.404131e-01, finite=878538/878538
+[DIAG] Client gradient 77: shape=(878538,), norm=5.644291e-01, mean=9.732319e-05, max=1.331674e-01, finite=878538/878538
+[DIAG] Client gradient 78: shape=(878538,), norm=6.868822e-01, mean=1.561969e-04, max=1.220096e-01, finite=878538/878538
+[DIAG] Client gradient 79: shape=(878538,), norm=9.437143e-01, mean=2.008793e-04, max=1.866943e-01, finite=878538/878538
+[DIAG] Client gradient 80: shape=(878538,), norm=1.255598e-01, mean=1.557441e-05, max=3.121029e-02, finite=878538/878538
+[DIAG] Client gradient 81: shape=(878538,), norm=3.294859e-01, mean=5.399433e-05, max=7.670089e-02, finite=878538/878538
+[DIAG] Client gradient 82: shape=(878538,), norm=8.508785e-01, mean=2.214932e-04, max=1.601167e-01, finite=878538/878538
+[DIAG] Client gradient 83: shape=(878538,), norm=7.329508e-01, mean=1.797656e-04, max=1.037433e-01, finite=878538/878538
+[DIAG] Client gradient 84: shape=(878538,), norm=8.623865e-01, mean=2.080098e-04, max=1.511503e-01, finite=878538/878538
+[DIAG] Client gradient 85: shape=(878538,), norm=7.845577e-01, mean=1.801976e-04, max=1.293423e-01, finite=878538/878538
+[DIAG] Client gradient 86: shape=(878538,), norm=6.824400e-01, mean=1.712656e-04, max=9.263782e-02, finite=878538/878538
+[DIAG] Client gradient 87: shape=(878538,), norm=8.229625e-01, mean=2.036467e-04, max=1.047381e-01, finite=878538/878538
+[DIAG] Client gradient 88: shape=(878538,), norm=1.786070e-01, mean=1.960049e-05, max=5.059660e-02, finite=878538/878538
+[DIAG] Client gradient 89: shape=(878538,), norm=6.764425e-01, mean=1.286913e-04, max=1.349124e-01, finite=878538/878538
+[DIAG] Client gradient 90: shape=(878538,), norm=4.579028e-01, mean=9.277764e-05, max=1.266296e-01, finite=878538/878538
+[DIAG] Client gradient 91: shape=(878538,), norm=3.068998e-02, mean=1.149987e-06, max=1.246755e-02, finite=878538/878538
+[DIAG] Client gradient 92: shape=(878538,), norm=3.704993e-01, mean=7.899445e-05, max=7.795055e-02, finite=878538/878538
+[DIAG] Client gradient 93: shape=(878538,), norm=4.851068e-01, mean=1.045370e-04, max=1.115897e-01, finite=878538/878538
+[DIAG] Client gradient 94: shape=(878538,), norm=9.517590e-01, mean=2.479182e-04, max=1.315744e-01, finite=878538/878538
+[DIAG] Client gradient 95: shape=(878538,), norm=5.361267e-01, mean=1.187700e-04, max=9.123089e-02, finite=878538/878538
+[DIAG] Client gradient 96: shape=(878538,), norm=8.164137e-01, mean=1.856934e-04, max=1.553938e-01, finite=878538/878538
+[DIAG] Client gradient 97: shape=(878538,), norm=7.564005e-02, mean=6.618726e-06, max=1.876290e-02, finite=878538/878538
+[DIAG] Client gradient 98: shape=(878538,), norm=7.495868e-01, mean=1.931484e-04, max=1.351554e-01, finite=878538/878538
+[DIAG] Client gradient 99: shape=(878538,), norm=7.866143e-01, mean=1.507232e-04, max=1.396182e-01, finite=878538/878538
+[DIAG] Mean client gradient: shape=(878538,), norm=3.533520e-01, mean=1.398241e-04, max=3.197483e-02, finite=878538/878538
+========== END CLIENT GRADIENTS ==========
+gradient tensor: torch.Size([878538, 100])
+memories: (100, 878538) | gradient: (878538,)
+P: (100, 100) | q: (100,) | G: (100, 100) | h: (100,)
+\n========== DIAG: GEM PROJECTION ==========
+[DIAG] Projected gradient g: shape=(878538,), norm=1.802095e+01, mean=7.131028e-03, max=1.630717e+00, finite=878538/878538
+[DIAG] Mean client gradient: shape=(878538,), norm=3.533520e-01, mean=1.398241e-04, max=3.197483e-02, finite=878538/878538
+OMG Meta LR: 0.0
+Gradient norm ratio: 50.999998059995555
+========== END GEM PROJECTION ==========
+\n========== DIAG: SERVER UPDATE ==========
+[DIAG] Meta weights before update: shape=(878538,), norm=1.436090e+01, mean=1.622690e-05, max=1.154516e-01, finite=878538/878538
+[DIAG] Actual server update: shape=(878538,), norm=0.000000e+00, mean=0.000000e+00, max=0.000000e+00, finite=878538/878538
+[DIAG] Meta weights after update: shape=(878538,), norm=1.436090e+01, mean=1.622690e-05, max=1.154516e-01, finite=878538/878538
+Relative update magnitude: 0.0
+========== END SERVER UPDATE ==========
+------------------------- time cost ------------------------- 38.41364049911499
+
+-------------Round number: 1-------------
+
+Evaluate global model
+Averaged Train Loss: 2.3038
+Averaged Test Accurancy: 0.0928
+Averaged Test AUC: 0.4894
+Std Test Accurancy: 0.1434
+Std Test AUC: 0.2233
+\n========== DIAG: CLIENT MODELS ==========
+[DIAG] Global model before OMG: shape=(878538,), norm=1.436090e+01, mean=1.622690e-05, max=1.154516e-01, finite=878538/878538
+Uploaded clients: 100
+[DIAG] Client 0 model: shape=(878538,), norm=1.443064e+01, mean=2.195188e-04, max=1.343056e-01, finite=878538/878538
+[DIAG] Client 1 model: shape=(878538,), norm=1.441083e+01, mean=2.246058e-04, max=1.530641e-01, finite=878538/878538
+[DIAG] Client 2 model: shape=(878538,), norm=1.436409e+01, mean=3.216624e-05, max=1.160539e-01, finite=878538/878538
+[DIAG] Client 3 model: shape=(878538,), norm=1.438471e+01, mean=1.134044e-04, max=1.257468e-01, finite=878538/878538
+[DIAG] Client 4 model: shape=(878538,), norm=1.436460e+01, mean=3.634141e-05, max=1.161977e-01, finite=878538/878538
+[DIAG] Client 5 model: shape=(878538,), norm=1.440196e+01, mean=1.808523e-04, max=1.464570e-01, finite=878538/878538
+[DIAG] Client 6 model: shape=(878538,), norm=1.436213e+01, mean=2.483394e-05, max=1.156704e-01, finite=878538/878538
+[DIAG] Client 7 model: shape=(878538,), norm=1.440038e+01, mean=1.847805e-04, max=1.296538e-01, finite=878538/878538
+[DIAG] Client 8 model: shape=(878538,), norm=1.439382e+01, mean=1.633455e-04, max=1.324451e-01, finite=878538/878538
+[DIAG] Client 9 model: shape=(878538,), norm=1.440897e+01, mean=2.051166e-04, max=1.396177e-01, finite=878538/878538
+[DIAG] Client 10 model: shape=(878538,), norm=1.440649e+01, mean=2.033985e-04, max=1.677396e-01, finite=878538/878538
+[DIAG] Client 11 model: shape=(878538,), norm=1.436191e+01, mean=2.017786e-05, max=1.156550e-01, finite=878538/878538
+[DIAG] Client 12 model: shape=(878538,), norm=1.439001e+01, mean=1.291326e-04, max=1.281500e-01, finite=878538/878538
+[DIAG] Client 13 model: shape=(878538,), norm=1.438920e+01, mean=1.258748e-04, max=1.288604e-01, finite=878538/878538
+[DIAG] Client 14 model: shape=(878538,), norm=1.441128e+01, mean=2.221339e-04, max=1.550857e-01, finite=878538/878538
+[DIAG] Client 15 model: shape=(878538,), norm=1.436269e+01, mean=2.413852e-05, max=1.155669e-01, finite=878538/878538
+[DIAG] Client 16 model: shape=(878538,), norm=1.436296e+01, mean=2.754543e-05, max=1.156846e-01, finite=878538/878538
+[DIAG] Client 17 model: shape=(878538,), norm=1.436185e+01, mean=1.973177e-05, max=1.154488e-01, finite=878538/878538
+[DIAG] Client 18 model: shape=(878538,), norm=1.441212e+01, mean=2.020465e-04, max=1.747895e-01, finite=878538/878538
+[DIAG] Client 19 model: shape=(878538,), norm=1.441024e+01, mean=2.353591e-04, max=1.306143e-01, finite=878538/878538
+[DIAG] Client 20 model: shape=(878538,), norm=1.441035e+01, mean=2.347124e-04, max=1.447483e-01, finite=878538/878538
+[DIAG] Client 21 model: shape=(878538,), norm=1.440906e+01, mean=2.311338e-04, max=1.428441e-01, finite=878538/878538
+[DIAG] Client 22 model: shape=(878538,), norm=1.440707e+01, mean=2.022676e-04, max=1.682907e-01, finite=878538/878538
+[DIAG] Client 23 model: shape=(878538,), norm=1.436577e+01, mean=4.021235e-05, max=1.162887e-01, finite=878538/878538
+[DIAG] Client 24 model: shape=(878538,), norm=1.440442e+01, mean=1.799303e-04, max=1.330494e-01, finite=878538/878538
+[DIAG] Client 25 model: shape=(878538,), norm=1.440335e+01, mean=1.705073e-04, max=1.424237e-01, finite=878538/878538
+[DIAG] Client 26 model: shape=(878538,), norm=1.437363e+01, mean=9.543397e-05, max=1.192144e-01, finite=878538/878538
+[DIAG] Client 27 model: shape=(878538,), norm=1.439513e+01, mean=1.810753e-04, max=1.524958e-01, finite=878538/878538
+[DIAG] Client 28 model: shape=(878538,), norm=1.440254e+01, mean=1.686742e-04, max=1.323598e-01, finite=878538/878538
+[DIAG] Client 29 model: shape=(878538,), norm=1.438462e+01, mean=1.427754e-04, max=1.223662e-01, finite=878538/878538
+[DIAG] Client 30 model: shape=(878538,), norm=1.440157e+01, mean=2.088504e-04, max=1.460696e-01, finite=878538/878538
+[DIAG] Client 31 model: shape=(878538,), norm=1.439656e+01, mean=1.883786e-04, max=1.284747e-01, finite=878538/878538
+[DIAG] Client 32 model: shape=(878538,), norm=1.438960e+01, mean=1.548372e-04, max=1.393969e-01, finite=878538/878538
+[DIAG] Client 33 model: shape=(878538,), norm=1.436191e+01, mean=2.265610e-05, max=1.155580e-01, finite=878538/878538
+[DIAG] Client 34 model: shape=(878538,), norm=1.436396e+01, mean=3.665116e-05, max=1.158198e-01, finite=878538/878538
+[DIAG] Client 35 model: shape=(878538,), norm=1.442625e+01, mean=2.376284e-04, max=1.717798e-01, finite=878538/878538
+[DIAG] Client 36 model: shape=(878538,), norm=1.439793e+01, mean=1.898539e-04, max=1.260997e-01, finite=878538/878538
+[DIAG] Client 37 model: shape=(878538,), norm=1.441055e+01, mean=2.169073e-04, max=1.341631e-01, finite=878538/878538
+[DIAG] Client 38 model: shape=(878538,), norm=1.438733e+01, mean=1.163305e-04, max=1.278988e-01, finite=878538/878538
+[DIAG] Client 39 model: shape=(878538,), norm=1.437804e+01, mean=1.079897e-04, max=1.274070e-01, finite=878538/878538
+[DIAG] Client 40 model: shape=(878538,), norm=1.440724e+01, mean=2.342457e-04, max=1.344638e-01, finite=878538/878538
+[DIAG] Client 41 model: shape=(878538,), norm=1.440529e+01, mean=1.856154e-04, max=1.339603e-01, finite=878538/878538
+[DIAG] Client 42 model: shape=(878538,), norm=1.441401e+01, mean=2.178670e-04, max=1.485616e-01, finite=878538/878538
+[DIAG] Client 43 model: shape=(878538,), norm=1.439527e+01, mean=1.844776e-04, max=1.327270e-01, finite=878538/878538
+[DIAG] Client 44 model: shape=(878538,), norm=1.442489e+01, mean=2.629193e-04, max=1.435023e-01, finite=878538/878538
+[DIAG] Client 45 model: shape=(878538,), norm=1.436189e+01, mean=2.635579e-05, max=1.156521e-01, finite=878538/878538
+[DIAG] Client 46 model: shape=(878538,), norm=1.438201e+01, mean=1.220534e-04, max=1.370472e-01, finite=878538/878538
+[DIAG] Client 47 model: shape=(878538,), norm=1.440444e+01, mean=2.010989e-04, max=1.284001e-01, finite=878538/878538
+[DIAG] Client 48 model: shape=(878538,), norm=1.441146e+01, mean=2.370148e-04, max=1.467426e-01, finite=878538/878538
+[DIAG] Client 49 model: shape=(878538,), norm=1.436222e+01, mean=2.312379e-05, max=1.157145e-01, finite=878538/878538
+[DIAG] Client 50 model: shape=(878538,), norm=1.441167e+01, mean=2.123531e-04, max=1.367697e-01, finite=878538/878538
+[DIAG] Client 51 model: shape=(878538,), norm=1.436306e+01, mean=3.185074e-05, max=1.158549e-01, finite=878538/878538
+[DIAG] Client 52 model: shape=(878538,), norm=1.436234e+01, mean=2.756444e-05, max=1.155515e-01, finite=878538/878538
+[DIAG] Client 53 model: shape=(878538,), norm=1.438710e+01, mean=1.451339e-04, max=1.251677e-01, finite=878538/878538
+[DIAG] Client 54 model: shape=(878538,), norm=1.439159e+01, mean=1.620714e-04, max=1.276141e-01, finite=878538/878538
+[DIAG] Client 55 model: shape=(878538,), norm=1.438539e+01, mean=1.298675e-04, max=1.224122e-01, finite=878538/878538
+[DIAG] Client 56 model: shape=(878538,), norm=1.437004e+01, mean=6.947185e-05, max=1.175285e-01, finite=878538/878538
+[DIAG] Client 57 model: shape=(878538,), norm=1.440862e+01, mean=2.384154e-04, max=1.359399e-01, finite=878538/878538
+[DIAG] Client 58 model: shape=(878538,), norm=1.440351e+01, mean=1.698985e-04, max=1.349632e-01, finite=878538/878538
+[DIAG] Client 59 model: shape=(878538,), norm=1.440511e+01, mean=1.985585e-04, max=1.383113e-01, finite=878538/878538
+[DIAG] Client 60 model: shape=(878538,), norm=1.440331e+01, mean=1.928253e-04, max=1.276362e-01, finite=878538/878538
+[DIAG] Client 61 model: shape=(878538,), norm=1.441611e+01, mean=2.412205e-04, max=1.362268e-01, finite=878538/878538
+[DIAG] Client 62 model: shape=(878538,), norm=1.440243e+01, mean=1.959616e-04, max=1.347882e-01, finite=878538/878538
+[DIAG] Client 63 model: shape=(878538,), norm=1.440157e+01, mean=1.868612e-04, max=1.336305e-01, finite=878538/878538
+[DIAG] Client 64 model: shape=(878538,), norm=1.436373e+01, mean=3.380300e-05, max=1.157248e-01, finite=878538/878538
+[DIAG] Client 65 model: shape=(878538,), norm=1.439894e+01, mean=1.880345e-04, max=1.273705e-01, finite=878538/878538
+[DIAG] Client 66 model: shape=(878538,), norm=1.440604e+01, mean=2.057496e-04, max=1.445712e-01, finite=878538/878538
+[DIAG] Client 67 model: shape=(878538,), norm=1.439521e+01, mean=1.643085e-04, max=1.309875e-01, finite=878538/878538
+[DIAG] Client 68 model: shape=(878538,), norm=1.440722e+01, mean=1.999691e-04, max=1.699579e-01, finite=878538/878538
+[DIAG] Client 69 model: shape=(878538,), norm=1.440491e+01, mean=2.130960e-04, max=1.299447e-01, finite=878538/878538
+[DIAG] Client 70 model: shape=(878538,), norm=1.441476e+01, mean=2.474993e-04, max=1.503194e-01, finite=878538/878538
+[DIAG] Client 71 model: shape=(878538,), norm=1.440046e+01, mean=1.642396e-04, max=1.312384e-01, finite=878538/878538
+[DIAG] Client 72 model: shape=(878538,), norm=1.437496e+01, mean=1.010158e-04, max=1.203008e-01, finite=878538/878538
+[DIAG] Client 73 model: shape=(878538,), norm=1.438900e+01, mean=1.385509e-04, max=1.509640e-01, finite=878538/878538
+[DIAG] Client 74 model: shape=(878538,), norm=1.436145e+01, mean=1.724720e-05, max=1.156355e-01, finite=878538/878538
+[DIAG] Client 75 model: shape=(878538,), norm=1.438470e+01, mean=1.368735e-04, max=1.249995e-01, finite=878538/878538
+[DIAG] Client 76 model: shape=(878538,), norm=1.438624e+01, mean=1.208808e-04, max=1.260961e-01, finite=878538/878538
+[DIAG] Client 77 model: shape=(878538,), norm=1.439907e+01, mean=1.874086e-04, max=1.386628e-01, finite=878538/878538
+[DIAG] Client 78 model: shape=(878538,), norm=1.439461e+01, mean=1.719405e-04, max=1.267853e-01, finite=878538/878538
+[DIAG] Client 79 model: shape=(878538,), norm=1.441236e+01, mean=2.217919e-04, max=1.294809e-01, finite=878538/878538
+[DIAG] Client 80 model: shape=(878538,), norm=1.439303e+01, mean=1.429152e-04, max=1.292231e-01, finite=878538/878538
+[DIAG] Client 81 model: shape=(878538,), norm=1.438587e+01, mean=1.532519e-04, max=1.249336e-01, finite=878538/878538
+[DIAG] Client 82 model: shape=(878538,), norm=1.440043e+01, mean=1.670453e-04, max=1.284668e-01, finite=878538/878538
+[DIAG] Client 83 model: shape=(878538,), norm=1.436103e+01, mean=1.732275e-05, max=1.154534e-01, finite=878538/878538
+[DIAG] Client 84 model: shape=(878538,), norm=1.439972e+01, mean=1.622683e-04, max=1.365261e-01, finite=878538/878538
+[DIAG] Client 85 model: shape=(878538,), norm=1.440292e+01, mean=2.051895e-04, max=1.533214e-01, finite=878538/878538
+[DIAG] Client 86 model: shape=(878538,), norm=1.440044e+01, mean=1.841487e-04, max=1.408592e-01, finite=878538/878538
+[DIAG] Client 87 model: shape=(878538,), norm=1.440238e+01, mean=1.802670e-04, max=1.656301e-01, finite=878538/878538
+[DIAG] Client 88 model: shape=(878538,), norm=1.437381e+01, mean=9.460601e-05, max=1.187816e-01, finite=878538/878538
+[DIAG] Client 89 model: shape=(878538,), norm=1.439140e+01, mean=1.523709e-04, max=1.247041e-01, finite=878538/878538
+[DIAG] Client 90 model: shape=(878538,), norm=1.439914e+01, mean=1.815153e-04, max=1.352730e-01, finite=878538/878538
+[DIAG] Client 91 model: shape=(878538,), norm=1.438528e+01, mean=1.456025e-04, max=1.248538e-01, finite=878538/878538
+[DIAG] Client 92 model: shape=(878538,), norm=1.439448e+01, mean=1.699389e-04, max=1.293487e-01, finite=878538/878538
+[DIAG] Client 93 model: shape=(878538,), norm=1.440473e+01, mean=2.076832e-04, max=1.318028e-01, finite=878538/878538
+[DIAG] Client 94 model: shape=(878538,), norm=1.442377e+01, mean=2.510999e-04, max=1.322443e-01, finite=878538/878538
+[DIAG] Client 95 model: shape=(878538,), norm=1.440062e+01, mean=1.989207e-04, max=1.286685e-01, finite=878538/878538
+[DIAG] Client 96 model: shape=(878538,), norm=1.440356e+01, mean=1.968984e-04, max=1.317198e-01, finite=878538/878538
+[DIAG] Client 97 model: shape=(878538,), norm=1.440784e+01, mean=2.125912e-04, max=1.363006e-01, finite=878538/878538
+[DIAG] Client 98 model: shape=(878538,), norm=1.441409e+01, mean=2.073711e-04, max=1.376984e-01, finite=878538/878538
+[DIAG] Client 99 model: shape=(878538,), norm=1.441820e+01, mean=2.170767e-04, max=1.775596e-01, finite=878538/878538
+========== END CLIENT DIAGNOSTICS ==========
+\n========== DIAG: CLIENT GRADIENTS ==========
+[DIAG] All domain gradients: shape=(878538, 100), norm=6.780370e+00, mean=1.395594e-04, max=1.870594e-01, finite=87853800/87853800
+[DIAG] Client gradient 0: shape=(878538,), norm=9.996307e-01, mean=2.032919e-04, max=1.215293e-01, finite=878538/878538
+[DIAG] Client gradient 1: shape=(878538,), norm=8.617994e-01, mean=2.083789e-04, max=1.514148e-01, finite=878538/878538
+[DIAG] Client gradient 2: shape=(878538,), norm=2.040591e-01, mean=1.593933e-05, max=8.697250e-02, finite=878538/878538
+[DIAG] Client gradient 3: shape=(878538,), norm=5.641451e-01, mean=9.717745e-05, max=1.334023e-01, finite=878538/878538
+[DIAG] Client gradient 4: shape=(878538,), norm=1.808961e-01, mean=2.011450e-05, max=5.112308e-02, finite=878538/878538
+[DIAG] Client gradient 5: shape=(878538,), norm=7.655144e-01, mean=1.646254e-04, max=1.338449e-01, finite=878538/878538
+[DIAG] Client gradient 6: shape=(878538,), norm=9.593172e-02, mean=8.607039e-06, max=3.453830e-02, finite=878538/878538
+[DIAG] Client gradient 7: shape=(878538,), norm=7.469977e-01, mean=1.685536e-04, max=9.231290e-02, finite=878538/878538
+[DIAG] Client gradient 8: shape=(878538,), norm=6.746910e-01, mean=1.471186e-04, max=1.434829e-01, finite=878538/878538
+[DIAG] Client gradient 9: shape=(878538,), norm=8.102325e-01, mean=1.888897e-04, max=1.210843e-01, finite=878538/878538
+[DIAG] Client gradient 10: shape=(878538,), norm=8.280488e-01, mean=1.871716e-04, max=1.551275e-01, finite=878538/878538
+[DIAG] Client gradient 11: shape=(878538,), norm=1.283585e-01, mean=3.950955e-06, max=5.783797e-02, finite=878538/878538
+[DIAG] Client gradient 12: shape=(878538,), norm=6.412960e-01, mean=1.129057e-04, max=1.356402e-01, finite=878538/878538
+[DIAG] Client gradient 13: shape=(878538,), norm=6.254961e-01, mean=1.096479e-04, max=1.420104e-01, finite=878538/878538
+[DIAG] Client gradient 14: shape=(878538,), norm=8.793643e-01, mean=2.059070e-04, max=1.495939e-01, finite=878538/878538
+[DIAG] Client gradient 15: shape=(878538,), norm=1.496816e-01, mean=7.911616e-06, max=6.008248e-02, finite=878538/878538
+[DIAG] Client gradient 16: shape=(878538,), norm=1.239788e-01, mean=1.131853e-05, max=4.551696e-02, finite=878538/878538
+[DIAG] Client gradient 17: shape=(878538,), norm=1.177972e-01, mean=3.504862e-06, max=4.975551e-02, finite=878538/878538
+[DIAG] Client gradient 18: shape=(878538,), norm=8.844774e-01, mean=1.858196e-04, max=1.842894e-01, finite=878538/878538
+[DIAG] Client gradient 19: shape=(878538,), norm=8.119356e-01, mean=2.191322e-04, max=8.346178e-02, finite=878538/878538
+[DIAG] Client gradient 20: shape=(878538,), norm=8.387680e-01, mean=2.184854e-04, max=1.557276e-01, finite=878538/878538
+[DIAG] Client gradient 21: shape=(878538,), norm=8.245571e-01, mean=2.149069e-04, max=1.547861e-01, finite=878538/878538
+[DIAG] Client gradient 22: shape=(878538,), norm=8.154200e-01, mean=1.860406e-04, max=1.556786e-01, finite=878538/878538
+[DIAG] Client gradient 23: shape=(878538,), norm=2.410031e-01, mean=2.398545e-05, max=5.985827e-02, finite=878538/878538
+[DIAG] Client gradient 24: shape=(878538,), norm=7.946972e-01, mean=1.637034e-04, max=9.981220e-02, finite=878538/878538
+[DIAG] Client gradient 25: shape=(878538,), norm=7.901161e-01, mean=1.542804e-04, max=1.497567e-01, finite=878538/878538
+[DIAG] Client gradient 26: shape=(878538,), norm=3.709215e-01, mean=7.920706e-05, max=7.761204e-02, finite=878538/878538
+[DIAG] Client gradient 27: shape=(878538,), norm=6.879491e-01, mean=1.648483e-04, max=1.508465e-01, finite=878538/878538
+[DIAG] Client gradient 28: shape=(878538,), norm=7.478365e-01, mean=1.524474e-04, max=1.127840e-01, finite=878538/878538
+[DIAG] Client gradient 29: shape=(878538,), norm=5.421979e-01, mean=1.265485e-04, max=1.245561e-01, finite=878538/878538
+[DIAG] Client gradient 30: shape=(878538,), norm=7.594629e-01, mean=1.926235e-04, max=1.522935e-01, finite=878538/878538
+[DIAG] Client gradient 31: shape=(878538,), norm=6.863351e-01, mean=1.721517e-04, max=1.172387e-01, finite=878538/878538
+[DIAG] Client gradient 32: shape=(878538,), norm=6.247378e-01, mean=1.386102e-04, max=1.377475e-01, finite=878538/878538
+[DIAG] Client gradient 33: shape=(878538,), norm=7.325268e-02, mean=6.429195e-06, max=1.875654e-02, finite=878538/878538
+[DIAG] Client gradient 34: shape=(878538,), norm=1.707093e-01, mean=2.042426e-05, max=6.656754e-02, finite=878538/878538
+[DIAG] Client gradient 35: shape=(878538,), norm=1.011454e+00, mean=2.214015e-04, max=1.556428e-01, finite=878538/878538
+[DIAG] Client gradient 36: shape=(878538,), norm=6.922815e-01, mean=1.736270e-04, max=9.270628e-02, finite=878538/878538
+[DIAG] Client gradient 37: shape=(878538,), norm=8.226038e-01, mean=2.006804e-04, max=1.094972e-01, finite=878538/878538
+[DIAG] Client gradient 38: shape=(878538,), norm=6.027809e-01, mean=1.001036e-04, max=1.227269e-01, finite=878538/878538
+[DIAG] Client gradient 39: shape=(878538,), norm=4.550060e-01, mean=9.176277e-05, max=1.257577e-01, finite=878538/878538
+[DIAG] Client gradient 40: shape=(878538,), norm=8.141530e-01, mean=2.180188e-04, max=1.408569e-01, finite=878538/878538
+[DIAG] Client gradient 41: shape=(878538,), norm=7.803983e-01, mean=1.693885e-04, max=9.641199e-02, finite=878538/878538
+[DIAG] Client gradient 42: shape=(878538,), norm=8.400722e-01, mean=2.016401e-04, max=1.382110e-01, finite=878538/878538
+[DIAG] Client gradient 43: shape=(878538,), norm=6.759360e-01, mean=1.682507e-04, max=1.447335e-01, finite=878538/878538
+[DIAG] Client gradient 44: shape=(878538,), norm=9.485163e-01, mean=2.466924e-04, max=1.341513e-01, finite=878538/878538
+[DIAG] Client gradient 45: shape=(878538,), norm=1.074138e-01, mean=1.012888e-05, max=4.087018e-02, finite=878538/878538
+[DIAG] Client gradient 46: shape=(878538,), norm=4.898342e-01, mean=1.058265e-04, max=1.123813e-01, finite=878538/878538
+[DIAG] Client gradient 47: shape=(878538,), norm=7.564409e-01, mean=1.848720e-04, max=9.763484e-02, finite=878538/878538
+[DIAG] Client gradient 48: shape=(878538,), norm=8.505897e-01, mean=2.207879e-04, max=1.602996e-01, finite=878538/878538
+[DIAG] Client gradient 49: shape=(878538,), norm=1.242855e-01, mean=6.896882e-06, max=4.670857e-02, finite=878538/878538
+[DIAG] Client gradient 50: shape=(878538,), norm=8.579027e-01, mean=1.961262e-04, max=1.126480e-01, finite=878538/878538
+[DIAG] Client gradient 51: shape=(878538,), norm=1.254505e-01, mean=1.562383e-05, max=3.115099e-02, finite=878538/878538
+[DIAG] Client gradient 52: shape=(878538,), norm=1.175123e-01, mean=1.133753e-05, max=4.726450e-02, finite=878538/878538
+[DIAG] Client gradient 53: shape=(878538,), norm=5.537833e-01, mean=1.289070e-04, max=1.005017e-01, finite=878538/878538
+[DIAG] Client gradient 54: shape=(878538,), norm=6.205806e-01, mean=1.458444e-04, max=1.029481e-01, finite=878538/878538
+[DIAG] Client gradient 55: shape=(878538,), norm=5.404540e-01, mean=1.136406e-04, max=1.038788e-01, finite=878538/878538
+[DIAG] Client gradient 56: shape=(878538,), norm=3.281771e-01, mean=5.324494e-05, max=7.645700e-02, finite=878538/878538
+[DIAG] Client gradient 57: shape=(878538,), norm=8.301206e-01, mean=2.221885e-04, max=1.412252e-01, finite=878538/878538
+[DIAG] Client gradient 58: shape=(878538,), norm=7.818568e-01, mean=1.536716e-04, max=1.022927e-01, finite=878538/878538
+[DIAG] Client gradient 59: shape=(878538,), norm=7.983086e-01, mean=1.823316e-04, max=1.224916e-01, finite=878538/878538
+[DIAG] Client gradient 60: shape=(878538,), norm=7.777587e-01, mean=1.765984e-04, max=1.147889e-01, finite=878538/878538
+[DIAG] Client gradient 61: shape=(878538,), norm=8.818814e-01, mean=2.249935e-04, max=1.104859e-01, finite=878538/878538
+[DIAG] Client gradient 62: shape=(878538,), norm=7.690775e-01, mean=1.797347e-04, max=1.549267e-01, finite=878538/878538
+[DIAG] Client gradient 63: shape=(878538,), norm=7.402520e-01, mean=1.706343e-04, max=1.049821e-01, finite=878538/878538
+[DIAG] Client gradient 64: shape=(878538,), norm=1.519032e-01, mean=1.757610e-05, max=5.321655e-02, finite=878538/878538
+[DIAG] Client gradient 65: shape=(878538,), norm=7.236942e-01, mean=1.718076e-04, max=1.237456e-01, finite=878538/878538
+[DIAG] Client gradient 66: shape=(878538,), norm=8.051302e-01, mean=1.895227e-04, max=1.418523e-01, finite=878538/878538
+[DIAG] Client gradient 67: shape=(878538,), norm=6.851083e-01, mean=1.480817e-04, max=7.823189e-02, finite=878538/878538
+[DIAG] Client gradient 68: shape=(878538,), norm=8.193375e-01, mean=1.837422e-04, max=1.573458e-01, finite=878538/878538
+[DIAG] Client gradient 69: shape=(878538,), norm=7.956220e-01, mean=1.968691e-04, max=1.262718e-01, finite=878538/878538
+[DIAG] Client gradient 70: shape=(878538,), norm=8.844308e-01, mean=2.312724e-04, max=1.602751e-01, finite=878538/878538
+[DIAG] Client gradient 71: shape=(878538,), norm=7.757279e-01, mean=1.480127e-04, max=1.388873e-01, finite=878538/878538
+[DIAG] Client gradient 72: shape=(878538,), norm=3.886619e-01, mean=8.478887e-05, max=9.717987e-02, finite=878538/878538
+[DIAG] Client gradient 73: shape=(878538,), norm=6.129003e-01, mean=1.223240e-04, max=1.383519e-01, finite=878538/878538
+[DIAG] Client gradient 74: shape=(878538,), norm=1.087663e-01, mean=1.020290e-06, max=4.110007e-02, finite=878538/878538
+[DIAG] Client gradient 75: shape=(878538,), norm=5.416777e-01, mean=1.206466e-04, max=9.108008e-02, finite=878538/878538
+[DIAG] Client gradient 76: shape=(878538,), norm=5.871864e-01, mean=1.046538e-04, max=1.248690e-01, finite=878538/878538
+[DIAG] Client gradient 77: shape=(878538,), norm=7.345779e-01, mean=1.711817e-04, max=1.138145e-01, finite=878538/878538
+[DIAG] Client gradient 78: shape=(878538,), norm=6.850216e-01, mean=1.557136e-04, max=1.220241e-01, finite=878538/878538
+[DIAG] Client gradient 79: shape=(878538,), norm=8.268249e-01, mean=2.055650e-04, max=1.058416e-01, finite=878538/878538
+[DIAG] Client gradient 80: shape=(878538,), norm=6.716962e-01, mean=1.266883e-04, max=1.347108e-01, finite=878538/878538
+[DIAG] Client gradient 81: shape=(878538,), norm=5.664482e-01, mean=1.370250e-04, max=1.236881e-01, finite=878538/878538
+[DIAG] Client gradient 82: shape=(878538,), norm=7.518162e-01, mean=1.508184e-04, max=1.108413e-01, finite=878538/878538
+[DIAG] Client gradient 83: shape=(878538,), norm=2.958855e-02, mean=1.095847e-06, max=1.184613e-02, finite=878538/878538
+[DIAG] Client gradient 84: shape=(878538,), norm=7.464287e-01, mean=1.460414e-04, max=1.500177e-01, finite=878538/878538
+[DIAG] Client gradient 85: shape=(878538,), norm=7.415490e-01, mean=1.889626e-04, max=1.347880e-01, finite=878538/878538
+[DIAG] Client gradient 86: shape=(878538,), norm=7.215287e-01, mean=1.679218e-04, max=1.161933e-01, finite=878538/878538
+[DIAG] Client gradient 87: shape=(878538,), norm=7.703773e-01, mean=1.640400e-04, max=1.530180e-01, finite=878538/878538
+[DIAG] Client gradient 88: shape=(878538,), norm=3.833364e-01, mean=7.837910e-05, max=1.083521e-01, finite=878538/878538
+[DIAG] Client gradient 89: shape=(878538,), norm=6.292704e-01, mean=1.361440e-04, max=1.060424e-01, finite=878538/878538
+[DIAG] Client gradient 90: shape=(878538,), norm=7.287087e-01, mean=1.652884e-04, max=1.200964e-01, finite=878538/878538
+[DIAG] Client gradient 91: shape=(878538,), norm=5.621327e-01, mean=1.293756e-04, max=1.202111e-01, finite=878538/878538
+[DIAG] Client gradient 92: shape=(878538,), norm=6.502721e-01, mean=1.537120e-04, max=9.556839e-02, finite=878538/878538
+[DIAG] Client gradient 93: shape=(878538,), norm=7.645479e-01, mean=1.914563e-04, max=1.132694e-01, finite=878538/878538
+[DIAG] Client gradient 94: shape=(878538,), norm=9.313457e-01, mean=2.348730e-04, max=1.253070e-01, finite=878538/878538
+[DIAG] Client gradient 95: shape=(878538,), norm=7.424189e-01, mean=1.826938e-04, max=1.047166e-01, finite=878538/878538
+[DIAG] Client gradient 96: shape=(878538,), norm=7.867816e-01, mean=1.806715e-04, max=1.302256e-01, finite=878538/878538
+[DIAG] Client gradient 97: shape=(878538,), norm=8.256845e-01, mean=1.963643e-04, max=1.578505e-01, finite=878538/878538
+[DIAG] Client gradient 98: shape=(878538,), norm=8.662496e-01, mean=1.911442e-04, max=1.363454e-01, finite=878538/878538
+[DIAG] Client gradient 99: shape=(878538,), norm=9.447100e-01, mean=2.008498e-04, max=1.870594e-01, finite=878538/878538
+[DIAG] Mean client gradient: shape=(878538,), norm=3.527405e-01, mean=1.395594e-04, max=3.188207e-02, finite=878538/878538
+========== END CLIENT GRADIENTS ==========
+gradient tensor: torch.Size([878538, 100])
+memories: (100, 878538) | gradient: (878538,)
+P: (100, 100) | q: (100,) | G: (100, 100) | h: (100,)
+\n========== DIAG: GEM PROJECTION ==========
+[DIAG] Projected gradient g: shape=(878538,), norm=1.798977e+01, mean=7.117528e-03, max=1.625986e+00, finite=878538/878538
+[DIAG] Mean client gradient: shape=(878538,), norm=3.527405e-01, mean=1.395594e-04, max=3.188207e-02, finite=878538/878538
+OMG Meta LR: 0.0
+Gradient norm ratio: 51.00000067575898
+========== END GEM PROJECTION ==========
+\n========== DIAG: SERVER UPDATE ==========
+[DIAG] Meta weights before update: shape=(878538,), norm=1.436090e+01, mean=1.622690e-05, max=1.154516e-01, finite=878538/878538
+[DIAG] Actual server update: shape=(878538,), norm=0.000000e+00, mean=0.000000e+00, max=0.000000e+00, finite=878538/878538
+[DIAG] Meta weights after update: shape=(878538,), norm=1.436090e+01, mean=1.622690e-05, max=1.154516e-01, finite=878538/878538
+Relative update magnitude: 0.0
+========== END SERVER UPDATE ==========
+------------------------- time cost ------------------------- 38.45239782333374
+
+Best accuracy.
+0.09280202235231506
+
+Average time cost per round.
+38.45239782333374
+File path: ../results/Cifar10_FedOMG_test_0.h5
+
+Average time cost: 81.66s.
+Traceback (most recent call last):
+  File "/home/cjq/Project/FedOMG/system/main.py", line 360, in <module>
+    run(args)
+  File "/home/cjq/Project/FedOMG/system/main.py", line 207, in run
+    average_data(dataset=args.dataset, algorithm=args.algorithm, goal=args.goal, times=args.times)
+  File "/home/cjq/Project/FedOMG/system/utils/result_utils.py", line 7, in average_data
+    test_acc = get_all_results_for_one_algo(algorithm, dataset, goal, times)
+  File "/home/cjq/Project/FedOMG/system/utils/result_utils.py", line 22, in get_all_results_for_one_algo
+    test_acc.append(np.array(read_data_then_delete(file_name, delete=False)))
+  File "/home/cjq/Project/FedOMG/system/utils/result_utils.py", line 30, in read_data_then_delete
+    with h5py.File(file_path, 'r') as hf:
+  File "/home/cjq/anaconda3/envs/fedomg/lib/python3.10/site-packages/h5py/_hl/files.py", line 562, in __init__
+    fid = make_fid(name, mode, userblock_size, fapl, fcpl, swmr=swmr)
+  File "/home/cjq/anaconda3/envs/fedomg/lib/python3.10/site-packages/h5py/_hl/files.py", line 235, in make_fid
+    fid = h5f.open(name, flags, fapl=fapl)
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 102, in h5py.h5f.open
+FileNotFoundError: [Errno 2] Unable to synchronously open file (unable to open file: name = '/home/id202388548/pFL/results/Cifar10_FedOMG_test_0.h5', errno = 2, error message = 'No such file or directory', flags = 0, o_flags = 0)

@@ -176,7 +176,7 @@ class MemReporter():
                 total_numel, readable_size(total_mem),
             ))
 
-            if device != torch.device('cpu'):
+            if device.type == 'cuda':
                 with torch.cuda.device(device):
                     memory_allocated = torch.cuda.memory_allocated()
                 print('The allocated memory on {}: {}'.format(

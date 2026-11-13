@@ -10,6 +10,35 @@ from torch.nn.utils import vector_to_parameters, parameters_to_vector
 from utils.model_utils import ParamDict
 import quadprog
 
+
+def tensor_diagnostics(name, tensor):
+    x = tensor.detach().float()
+    finite = torch.isfinite(x)
+    count = finite.sum().item()
+
+    if count:
+        values = x[finite]
+        print(
+            f"[DIAG] {name}: "
+            f"shape={tuple(x.shape)}, "
+            f"norm={values.norm().item():.6e}, "
+            f"mean={values.mean().item():.6e}, "
+            f"max={values.abs().max().item():.6e}, "
+            f"finite={count}/{x.numel()}",
+            flush=True
+        )
+    else:
+        print(f"[DIAG] {name}: NO FINITE VALUES", flush=True)
+
+
+def model_diagnostics(name, model):
+    params = torch.cat([
+        p.detach().reshape(-1)
+        for p in model.parameters()
+    ])
+    tensor_diagnostics(name, params)
+
+
 class FedOMG(Server):
     def __init__(self, args, times):
         super().__init__(args, times)
@@ -50,7 +79,21 @@ class FedOMG(Server):
             for client in self.selected_clients:
                 client.train()
 
+
             self.receive_models()
+
+            # DIAG: client models
+            print("\\n========== DIAG: CLIENT MODELS ==========", flush=True)
+
+            model_diagnostics("Global model before OMG", self.global_model)
+
+            print("Uploaded clients:", len(self.uploaded_models))
+
+            for idx, model in enumerate(self.uploaded_models):
+                model_diagnostics(f"Client {idx} model", model)
+
+            print("========== END CLIENT DIAGNOSTICS ==========",
+                  flush=True)
             self.receive_grads()
 
             meta_weights = self.omg_high(
@@ -117,12 +160,73 @@ class FedOMG(Server):
 
         all_domains_grad_tensor = torch.stack(all_domain_grads).t()
 
+        # DIAG: client gradients
+        print("\\n========== DIAG: CLIENT GRADIENTS ==========",
+              flush=True)
+
+        tensor_diagnostics("All domain gradients", all_domains_grad_tensor)
+
+        for idx, grad in enumerate(all_domain_grads):
+            tensor_diagnostics(f"Client gradient {idx}", grad)
+
+        mean_gradient = all_domains_grad_tensor.mean(dim=1)
+
+        tensor_diagnostics("Mean client gradient", mean_gradient)
+
+        print("========== END CLIENT GRADIENTS ==========",
+              flush=True)
+
+
         # print(all_domains_grad_tensor)
         if self.gm_flag == "ca_grad":
             g = self.omg_low(all_domains_grad_tensor, int(self.num_clients*self.join_ratio))
         else:
             g = project2cone2(all_domains_grad_tensor,
                               int(self.num_clients*self.join_ratio), margin=0.5, eps=1e-3).to(self.device)
+
+
+        # DIAG: GEM projection
+        print("\\n========== DIAG: GEM PROJECTION ==========",
+              flush=True)
+
+        tensor_diagnostics("Projected gradient g", g)
+        tensor_diagnostics("Mean client gradient", mean_gradient)
+
+        print("OMG Meta LR:", lr_meta)
+
+        print(
+            "Gradient norm ratio:",
+            g.norm().item() /
+            (mean_gradient.norm().item() + 1e-12)
+        )
+
+        print("========== END GEM PROJECTION ==========",
+              flush=True)
+
+        # DIAG: server update
+        print("\\n========== DIAG: SERVER UPDATE ==========",
+              flush=True)
+
+        tensor_diagnostics("Meta weights before update",
+                           flatten_meta_weights)
+
+        update = g * lr_meta
+
+        tensor_diagnostics("Actual server update", update)
+
+        updated_weights = flatten_meta_weights + update
+
+        tensor_diagnostics("Meta weights after update",
+                           updated_weights)
+
+        print(
+            "Relative update magnitude:",
+            update.norm().item() /
+            (flatten_meta_weights.norm().item() + 1e-12)
+        )
+
+        print("========== END SERVER UPDATE ==========",
+              flush=True)
 
         flatten_meta_weights += g * lr_meta
 

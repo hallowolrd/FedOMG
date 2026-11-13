@@ -1,0 +1,255 @@
+-------------Round number: 0-------------
+Averaged Train Loss: 2.3038
+Averaged Test Accurancy: 0.0928
+Averaged Test AUC: 0.4894
+Relative update magnitude: 0.01252159038371469
+-------------Round number: 1-------------
+Averaged Train Loss: 2.3000
+Averaged Test Accurancy: 0.0777
+Averaged Test AUC: 0.5181
+Relative update magnitude: 0.011100855896252313
+-------------Round number: 2-------------
+Averaged Train Loss: 2.2933
+Averaged Test Accurancy: 0.0936
+Averaged Test AUC: 0.5613
+Relative update magnitude: 0.009094907185444262
+-------------Round number: 3-------------
+Averaged Train Loss: 2.2843
+Averaged Test Accurancy: 0.1759
+Averaged Test AUC: 0.5731
+Relative update magnitude: 0.007372676237178884
+-------------Round number: 4-------------
+Averaged Train Loss: 2.2738
+Averaged Test Accurancy: 0.1994
+Averaged Test AUC: 0.5804
+Relative update magnitude: 0.006177922674789667
+-------------Round number: 5-------------
+Averaged Train Loss: 2.2618
+Averaged Test Accurancy: 0.2058
+Averaged Test AUC: 0.5951
+Relative update magnitude: 0.005331167460330589
+-------------Round number: 6-------------
+Averaged Train Loss: 2.2475
+Averaged Test Accurancy: 0.2113
+Averaged Test AUC: 0.6098
+Relative update magnitude: 0.004715304803449998
+-------------Round number: 7-------------
+Averaged Train Loss: 2.2302
+Averaged Test Accurancy: 0.2183
+Averaged Test AUC: 0.6255
+Relative update magnitude: 0.004266966214821765
+-------------Round number: 8-------------
+Averaged Train Loss: 2.2108
+Averaged Test Accurancy: 0.2215
+Averaged Test AUC: 0.6403
+Relative update magnitude: 0.003918059746040571
+-------------Round number: 9-------------
+Averaged Train Loss: 2.1907
+Averaged Test Accurancy: 0.2270
+Averaged Test AUC: 0.6534
+Relative update magnitude: 0.003657917566839564
+-------------Round number: 10-------------
+Averaged Train Loss: 2.1696
+Averaged Test Accurancy: 0.2297
+Averaged Test AUC: 0.6663
+Relative update magnitude: 0.003454689543657245
+-------------Round number: 11-------------
+Averaged Train Loss: 2.1493
+Averaged Test Accurancy: 0.2338
+Averaged Test AUC: 0.6769
+Relative update magnitude: 0.0032836487973766167
+-------------Round number: 12-------------
+Averaged Train Loss: 2.1285
+Averaged Test Accurancy: 0.2352
+Averaged Test AUC: 0.6876
+Relative update magnitude: 0.003142156726296299
+-------------Round number: 13-------------
+Averaged Train Loss: 2.1081
+Averaged Test Accurancy: 0.2390
+Averaged Test AUC: 0.6969
+Relative update magnitude: 0.0030135270197201138
+-------------Round number: 14-------------
+Averaged Train Loss: 2.0883
+Averaged Test Accurancy: 0.2425
+Averaged Test AUC: 0.7056
+Relative update magnitude: 0.0028988923573414504
+-------------Round number: 15-------------
+Averaged Train Loss: 2.0705
+Averaged Test Accurancy: 0.2435
+Averaged Test AUC: 0.7120
+Relative update magnitude: 0.0027995611952088533
+-------------Round number: 16-------------
+Averaged Train Loss: 2.0548
+Averaged Test Accurancy: 0.2460
+Averaged Test AUC: 0.7175
+Relative update magnitude: 0.002702140773854152
+-------------Round number: 17-------------
+Averaged Train Loss: 2.0396
+Averaged Test Accurancy: 0.2477
+Averaged Test AUC: 0.7222
+Relative update magnitude: 0.0026059687665913544
+-------------Round number: 18-------------
+Averaged Train Loss: 2.0246
+Averaged Test Accurancy: 0.2495
+Averaged Test AUC: 0.7274
+Relative update magnitude: 0.0025248314056752594
+-------------Round number: 19-------------
+Averaged Train Loss: 2.0121
+Averaged Test Accurancy: 0.2522
+Averaged Test AUC: 0.7311
+Relative update magnitude: 0.0024387863367612344
+-------------Round number: 20-------------
+Averaged Train Loss: 2.0000
+Averaged Test Accurancy: 0.2549
+Averaged Test AUC: 0.7351
+Relative update magnitude: 0.002371640297037517
+-------------Round number: 21-------------
+Averaged Train Loss: 1.9878
+Averaged Test Accurancy: 0.2580
+Averaged Test AUC: 0.7385
+Relative update magnitude: 0.002308100388466825
+-------------Round number: 22-------------
+Averaged Train Loss: 1.9790
+Averaged Test Accurancy: 0.2602
+Averaged Test AUC: 0.7411
+Relative update magnitude: 0.0022497113587343553
+-------------Round number: 23-------------
+Averaged Train Loss: 1.9681
+Averaged Test Accurancy: 0.2648
+Averaged Test AUC: 0.7440
+Relative update magnitude: 0.002208542682651127
+-------------Round number: 24-------------
+Averaged Train Loss: 1.9591
+Averaged Test Accurancy: 0.2700
+Averaged Test AUC: 0.7466
+Relative update magnitude: 0.002158650787688894
+-------------Round number: 25-------------
+Averaged Train Loss: 1.9498
+Averaged Test Accurancy: 0.2710
+Averaged Test AUC: 0.7490
+Relative update magnitude: 0.0021389044023094315
+-------------Round number: 26-------------
+Averaged Train Loss: 1.9408
+Averaged Test Accurancy: 0.2753
+Averaged Test AUC: 0.7518
+Relative update magnitude: 0.0021009732678761357
+-------------Round number: 27-------------
+Averaged Train Loss: 1.9326
+Averaged Test Accurancy: 0.2775
+Averaged Test AUC: 0.7538
+Relative update magnitude: 0.0020707210895662843
+-------------Round number: 28-------------
+Averaged Train Loss: 1.9250
+Averaged Test Accurancy: 0.2815
+Averaged Test AUC: 0.7558
+Relative update magnitude: 0.002051664555375879
+-------------Round number: 29-------------
+Averaged Train Loss: 1.9170
+Averaged Test Accurancy: 0.2851
+Averaged Test AUC: 0.7581
+Relative update magnitude: 0.0020345410454766016
+-------------Round number: 30-------------
+Averaged Train Loss: 1.9088
+Averaged Test Accurancy: 0.2883
+Averaged Test AUC: 0.7599
+Relative update magnitude: 0.0020350768749939083
+-------------Round number: 31-------------
+Averaged Train Loss: 1.9013
+Averaged Test Accurancy: 0.2926
+Averaged Test AUC: 0.7620
+Relative update magnitude: 0.002022132932458927
+-------------Round number: 32-------------
+Averaged Train Loss: 1.8925
+Averaged Test Accurancy: 0.2986
+Averaged Test AUC: 0.7644
+Relative update magnitude: 0.0020103209857416328
+-------------Round number: 33-------------
+Averaged Train Loss: 1.8859
+Averaged Test Accurancy: 0.3000
+Averaged Test AUC: 0.7660
+Relative update magnitude: 0.002002905526130909
+-------------Round number: 34-------------
+Averaged Train Loss: 1.8804
+Averaged Test Accurancy: 0.3033
+Averaged Test AUC: 0.7675
+Relative update magnitude: 0.0020019659592683398
+-------------Round number: 35-------------
+Averaged Train Loss: 1.8722
+Averaged Test Accurancy: 0.3051
+Averaged Test AUC: 0.7695
+Relative update magnitude: 0.001998963936362417
+-------------Round number: 36-------------
+Averaged Train Loss: 1.8654
+Averaged Test Accurancy: 0.3078
+Averaged Test AUC: 0.7714
+Relative update magnitude: 0.001987791197390104
+-------------Round number: 37-------------
+Averaged Train Loss: 1.8572
+Averaged Test Accurancy: 0.3109
+Averaged Test AUC: 0.7734
+Relative update magnitude: 0.0019858144954959613
+-------------Round number: 38-------------
+Averaged Train Loss: 1.8508
+Averaged Test Accurancy: 0.3147
+Averaged Test AUC: 0.7751
+Relative update magnitude: 0.0019895211210595844
+-------------Round number: 39-------------
+Averaged Train Loss: 1.8437
+Averaged Test Accurancy: 0.3180
+Averaged Test AUC: 0.7769
+Relative update magnitude: 0.001982907251351999
+-------------Round number: 40-------------
+Averaged Train Loss: 1.8374
+Averaged Test Accurancy: 0.3209
+Averaged Test AUC: 0.7784
+Relative update magnitude: 0.0019806895636660703
+-------------Round number: 41-------------
+Averaged Train Loss: 1.8300
+Averaged Test Accurancy: 0.3235
+Averaged Test AUC: 0.7803
+Relative update magnitude: 0.001967417944455493
+-------------Round number: 42-------------
+Averaged Train Loss: 1.8218
+Averaged Test Accurancy: 0.3277
+Averaged Test AUC: 0.7823
+Relative update magnitude: 0.0019634063233466316
+-------------Round number: 43-------------
+Averaged Train Loss: 1.8160
+Averaged Test Accurancy: 0.3306
+Averaged Test AUC: 0.7835
+Relative update magnitude: 0.00195741766448772
+-------------Round number: 44-------------
+Averaged Train Loss: 1.8086
+Averaged Test Accurancy: 0.3353
+Averaged Test AUC: 0.7852
+Relative update magnitude: 0.0019425096259966695
+-------------Round number: 45-------------
+Averaged Train Loss: 1.8012
+Averaged Test Accurancy: 0.3397
+Averaged Test AUC: 0.7870
+Relative update magnitude: 0.0019273404924308752
+-------------Round number: 46-------------
+Averaged Train Loss: 1.7950
+Averaged Test Accurancy: 0.3425
+Averaged Test AUC: 0.7886
+Relative update magnitude: 0.0019134823316604669
+-------------Round number: 47-------------
+Averaged Train Loss: 1.7884
+Averaged Test Accurancy: 0.3444
+Averaged Test AUC: 0.7901
+Relative update magnitude: 0.0019020799698173932
+-------------Round number: 48-------------
+Averaged Train Loss: 1.7817
+Averaged Test Accurancy: 0.3474
+Averaged Test AUC: 0.7916
+Relative update magnitude: 0.0018807335328468718
+-------------Round number: 49-------------
+Averaged Train Loss: 1.7754
+Averaged Test Accurancy: 0.3502
+Averaged Test AUC: 0.7931
+Relative update magnitude: 0.0018721793913053623
+-------------Round number: 50-------------
+Averaged Train Loss: 1.7696
+Averaged Test Accurancy: 0.3520
+Averaged Test AUC: 0.7942
+Relative update magnitude: 0.0018522264000641665
