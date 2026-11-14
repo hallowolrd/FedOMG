@@ -16,13 +16,37 @@ python -m venv .env
 ```
 
 ## Running
-For instance, the experiment of FedOMG by the following expressions:
-```
-python .\system\main.py -data Cifar10 -gr 800 -algo FedOMG -m cnn -mstr cnn -nc 100 -nb 100 -ls 5 -omgr 25 -omglr 25 -mmt 0.5 -ss 30 -gam 0.5 --noniid --balance --alpha_dirich 0.1
-python .\system\main.py -data Cifar10 -gr 800 -algo FedOMG -m cnn -mstr cnn -nc 100 -nb 100 -ls 5 -omgr 25 -omglr 25 -mmt 0.5 -ss 30 -gam 0.5 --noniid --balance --alpha_dirich 0.1
-python .\system\main.py -data Cifar10 -gr 800 -algo FedOMG -m cnn -mstr cnn -nc 100 -nb 100 -ls 5 -omgr 25 -omglr 25 -mmt 0.5 -ss 30 -gam 0.5 --noniid --balance --alpha_dirich 0.1
-python .\system\main.py -data Cifar10 -gr 800 -algo FedOMG -m cnn -mstr cnn -nc 100 -nb 100 -ls 5 -omgr 25 -omglr 25 -mmt 0.5 -ss 30 -gam 0.5 --noniid --balance --alpha_dirich 0.1
-```
+
+For CIFAR-10, the dataset generator stores each partition under
+\`Cifar10/<num_clients>/<balance>_<noniid>_<alpha>/\`.
+
+Generate the two Dirichlet partitions from the \`dataset\` directory if they
+do not already exist:
+
+\`\`\`bash
+cd dataset
+python generate_cifar10.py noniid balance dir 100 0.1
+python generate_cifar10.py noniid balance dir 100 0.5
+cd ..
+\`\`\`
+
+Run the 800-round, five-seed experiments from the repository root:
+
+**CIFAR-10, Dirichlet α = 0.1**
+
+\`\`\`bash
+python system/main.py -data Cifar10 -algo FedOMG -m cnn -mstr cnn -nb 10 -nc 100 -jr 1.0 -gr 800 -ls 5 -lr 0.005 -lbs 16 -t 5 -go cifar10_a01_jr1 -omgr 25 -omglr 25 -mmt 0.5 -ss 30 -gam 0.5 --omg_c 0.5 --omg_meta_lr 1.0 --noniid --balance --alpha_dirich 0.1 --seed 2025
+\`\`\`
+
+**CIFAR-10, Dirichlet α = 0.5**
+
+\`\`\`bash
+python system/main.py -data Cifar10 -algo FedOMG -m cnn -mstr cnn -nb 10 -nc 100 -jr 1.0 -gr 800 -ls 5 -lr 0.005 -lbs 16 -t 5 -go cifar10_a05_jr1 -omgr 25 -omglr 25 -mmt 0.5 -ss 30 -gam 0.5 --omg_c 0.5 --omg_meta_lr 1.0 --noniid --balance --alpha_dirich 0.5 --seed 2025
+\`\`\`
+
+Use a distinct \`-go\` value for each experiment setting so the result files
+for different α values are not overwritten. Add \`--debug\` only for short
+diagnostic runs; leave it off for the full experiments.
 
 # Citation
 ```
