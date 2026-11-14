@@ -13,27 +13,51 @@ least_samples = batch_size / (1 - train_size)  # least samples for each client
 
 def check(config_path, train_path, test_path, num_clients, num_classes, alpha, niid=False, balance=True,
           partition=None):
-    # check existing dataset
-    if os.path.exists(config_path):
-        with open(config_path, 'r') as f:
-            config = ujson.load(f)
-        if config['num_clients'] == num_clients and \
-                config['num_classes'] == num_classes and \
-                config['non_iid'] == niid and \
-                config['balance'] == balance and \
-                config['partition'] == partition and \
-                config['alpha'] == alpha and \
-                config['batch_size'] == batch_size:
-            print("\nDataset already generated.\n")
-            return True
+    """Return True only when config and every expected client file exist."""
+    if os.path.isfile(config_path):
+        try:
+            with open(config_path, "r", encoding="utf-8") as file:
+                config = ujson.load(file)
 
-    dir_path = os.path.dirname(train_path)
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
-    dir_path = os.path.dirname(test_path)
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
+            config_matches = (
+                config.get("num_clients") == num_clients
+                and config.get("num_classes") == num_classes
+                and config.get("non_iid") == niid
+                and config.get("balance") == balance
+                and config.get("partition") == partition
+                and np.isclose(float(config.get("alpha", float("nan"))), float(alpha))
+                and config.get("batch_size") == batch_size
+            )
+        except (OSError, ValueError, TypeError):
+            config_matches = False
 
+        if config_matches:
+            expected_train_files = [
+                os.path.join(train_path, f"{client_id}.npz")
+                for client_id in range(num_clients)
+            ]
+            expected_test_files = [
+                os.path.join(test_path, f"{client_id}.npz")
+                for client_id in range(num_clients)
+            ]
+            missing_files = [
+                path
+                for path in expected_train_files + expected_test_files
+                if not os.path.isfile(path)
+            ]
+
+            if not missing_files:
+                print("\nDataset already generated and all client files are present.\n")
+                return True
+
+            print(
+                f"\nDataset is incomplete: {len(missing_files)} of "
+                f"{2 * num_clients} expected client files are missing. "
+                "Regenerating the partition.\n"
+            )
+
+    os.makedirs(train_path, exist_ok=True)
+    os.makedirs(test_path, exist_ok=True)
     return False
 
 
