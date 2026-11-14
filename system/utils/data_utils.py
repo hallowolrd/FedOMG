@@ -1,241 +1,283 @@
-import numpy as np
+import json
 import os
+from pathlib import Path
+
+import numpy as np
 import torch
 
-# data_path = '/media/mountHDD2/protector/pFL-CAG/dataset/'
-# data_path = '/home/id202388548/experience/dataset/'
-data_path = '../dataset/'
-setting = '100/False_True_0.1/'
 
-"""
-This one is for testing
-"""
-# def read_data(dataset, idx, niid, balance, alpha, is_train=True, num_clients=None):
-#     if is_train:
-#         train_data_dir = os.path.join(data_path, dataset, str(num_clients), f"{balance}_{niid}_{alpha}", 'train/')
-
-#         train_file = train_data_dir + str(idx) + '.npz'
-#         with open(train_file, 'rb') as f:
-#             train_data = np.load(f, allow_pickle=True)['data'].tolist()
-
-#         return train_data
-
-#     else:
-#         test_data_dir = os.path.join(data_path, dataset, str(num_clients), f"{balance}_{niid}_{alpha}", 'test/')
-#         test_file = test_data_dir + str(idx) + '.npz'
-#         with open(test_file, 'rb') as f:
-#             test_data = np.load(f, allow_pickle=True)['data'].tolist()
-
-#         return test_data
-    
-
-# def read_client_data(dataset, idx, niid, balance, alpha, is_train=True, num_clients=None):
-#     if num_clients is None:
-#         raise ValueError("num_clients cannot be None")
-#     if dataset[:2] == "ag" or dataset[:2] == "SS":
-#         return read_client_data_text(dataset, idx, niid, balance, alpha, is_train, num_clients)
-#     elif dataset[:2] == "sh":
-#         return read_client_data_shakespeare(dataset, idx, niid, balance, alpha, is_train, num_clients)
-
-#     if is_train:
-#         train_data = read_data(dataset, idx, niid, balance, alpha, is_train, num_clients)
-#         X_train = torch.Tensor(train_data['x']).type(torch.float32)
-#         y_train = torch.Tensor(train_data['y']).type(torch.int64)
-
-#         train_data = [(x, y) for x, y in zip(X_train, y_train)]
-#         return train_data
-#     else:
-#         test_data = read_data(dataset, idx, niid, balance, alpha, is_train, num_clients)
-#         X_test = torch.Tensor(test_data['x']).type(torch.float32)
-#         y_test = torch.Tensor(test_data['y']).type(torch.int64)
-#         test_data = [(x, y) for x, y in zip(X_test, y_test)]
-        # return test_data
-
-def read_test_data(dataset):
-    test_data_dir = os.path.join(data_path, dataset, setting, 'test/')
-
-    test_file = test_data_dir + 'test' + '.npz'
-    with open(test_file, 'rb') as f:
-        test_data = np.load(f, allow_pickle=True)['data'].tolist()
-
-    return test_data
-    
-def client_test_data(dataset):
-    test_data = read_test_data(dataset)
-    X_test = torch.Tensor(test_data['x']).type(torch.float32)
-    y_test = torch.Tensor(test_data['y']).type(torch.int64)
-    test_data = [(x, y) for x, y in zip(X_test, y_test)]
-    
-    return test_data
-    
-
-def read_data(dataset, idx, is_train=True):
-    if is_train:
-        train_data_dir = os.path.join(data_path, dataset, setting, 'train/')
-
-        train_file = train_data_dir + str(idx) + '.npz'
-        with open(train_file, 'rb') as f:
-            train_data = np.load(f, allow_pickle=True)['data'].tolist()
-
-        return train_data
-    
-    else:
-        test_data_dir = os.path.join(data_path, dataset, setting, 'test/')
-
-        test_file = test_data_dir + str(idx) + '.npz'
-        with open(test_file, 'rb') as f:
-            test_data = np.load(f, allow_pickle=True)['data'].tolist()
-
-        return test_data
-    
-    
-def read_client_data(dataset, idx, is_train=True):
-    # if "News" in dataset:
-    #     return read_client_data_text(dataset, idx, is_train)
-    # elif "Shakespeare" in dataset:
-    #     return read_client_data_Shakespeare(dataset, idx)
-
-    if is_train:
-        train_data = read_data(dataset, idx, is_train)
-        X_train = torch.Tensor(train_data['x']).type(torch.float32)
-        y_train = torch.Tensor(train_data['y']).type(torch.int64)
-
-        train_data = [(x, y) for x, y in zip(X_train, y_train)]
-        return train_data
-    else:
-        test_data = read_data(dataset, idx, is_train)
-        X_test = torch.Tensor(test_data['x']).type(torch.float32)
-        y_test = torch.Tensor(test_data['y']).type(torch.int64)
-        test_data = [(x, y) for x, y in zip(X_test, y_test)]
-        return test_data
-
-"""
-This one is for testing
-"""
-
-# def read_client_data_text(dataset, idx, is_train=True):
-def read_client_data_text(dataset, idx, niid, balance, alpha, is_train=True, num_clients=None):
-    if is_train:
-#         train_data = read_data(dataset, idx, is_train)
-        train_data = read_data(dataset, idx, niid, balance, alpha, is_train, num_clients)
-        X_train, X_train_lens = list(zip(*train_data['x']))
-        y_train = train_data['y']
-
-        X_train = torch.Tensor(X_train).type(torch.int64)
-        X_train_lens = torch.Tensor(X_train_lens).type(torch.int64)
-        y_train = torch.Tensor(train_data['y']).type(torch.int64)
-
-        train_data = [((x, lens), y) for x, lens, y in zip(X_train, X_train_lens, y_train)]
-        return train_data
-    else:
-#         test_data = read_data(dataset, idx, is_train)
-        test_data = read_data(dataset, idx, niid, balance, alpha, is_train, num_clients)
-        X_test, X_test_lens = list(zip(*test_data['x']))
-        y_test = test_data['y']
-
-        X_test = torch.Tensor(X_test).type(torch.int64)
-        X_test_lens = torch.Tensor(X_test_lens).type(torch.int64)
-        y_test = torch.Tensor(test_data['y']).type(torch.int64)
-
-        test_data = [((x, lens), y) for x, lens, y in zip(X_test, X_test_lens, y_test)]
-        return test_data
+def _dataset_root():
+    """Return the dataset root, independent of the process working directory."""
+    override = os.environ.get("FEDOMG_DATA_ROOT")
+    if override:
+        return Path(override).expanduser().resolve()
+    # data_utils.py is <repo>/system/utils/data_utils.py.
+    return (Path(__file__).resolve().parents[2] / "dataset").resolve()
 
 
-def read_client_data_shakespeare(dataset, idx, niid, balance, alpha, is_train=True, num_clients=None):
-    if is_train:
-        train_data = read_data(dataset, idx, is_train)
-        train_data = read_data(dataset, idx, niid, balance, alpha, is_train, num_clients)
-        X_train = torch.Tensor(train_data['x']).type(torch.int64)
-        y_train = torch.Tensor(train_data['y']).type(torch.int64)
+def _validate_dataset_config(config_path, num_clients, niid, balance, alpha):
+    if not config_path.is_file():
+        raise FileNotFoundError(
+            f"Dataset config file is missing: {config_path}. "
+            "Regenerate the dataset with the repository's dataset generator."
+        )
 
-        train_data = [(x, y) for x, y in zip(X_train, y_train)]
-        return train_data
-    else:
-        test_data = read_data(dataset, idx, is_train)
-        test_data = read_data(dataset, idx, niid, balance, alpha, is_train, num_clients)
-        X_test = torch.Tensor(test_data['x']).type(torch.int64)
-        y_test = torch.Tensor(test_data['y']).type(torch.int64)
-        test_data = [(x, y) for x, y in zip(X_test, y_test)]
-        return test_data
+    with config_path.open("r", encoding="utf-8") as file:
+        config = json.load(file)
 
-#
-# def read_data(dataset, idx, is_train=True):
-#     if is_train:
-#         train_data_dir = os.path.join('../dataset', dataset, 'train/')
-#
-#         train_file = train_data_dir + str(idx) + '.npz'
-#         with open(train_file, 'rb') as f:
-#             train_data = np.load(f, allow_pickle=True)['data'].tolist()
-#
-#         return train_data
-#
-#     else:
-#         test_data_dir = os.path.join('../dataset', dataset, 'test/')
-#
-#         test_file = test_data_dir + str(idx) + '.npz'
-#         with open(test_file, 'rb') as f:
-#             test_data = np.load(f, allow_pickle=True)['data'].tolist()
-#
-#         return test_data
-#
-#
-# def read_client_data(dataset, idx, is_train=True):
-#     if "News" in dataset:
-#         return read_client_data_text(dataset, idx, is_train)
-#     elif "Shakespeare" in dataset:
-#         return read_client_data_Shakespeare(dataset, idx)
-#
-#     if is_train:
-#         train_data = read_data(dataset, idx, is_train)dataset
-#         X_train = torch.Tensor(train_data['x']).type(torch.float32)
-#         y_train = torch.Tensor(train_data['y']).type(torch.int64)
-#
-#         train_data = [(x, y) for x, y in zip(X_train, y_train)]
-#         return train_data
-#     else:
-#         test_data = read_data(dataset, idx, is_train)
-#         X_test = torch.Tensor(test_data['x']).type(torch.float32)
-#         y_test = torch.Tensor(test_data['y']).type(torch.int64)
-#         test_data = [(x, y) for x, y in zip(X_test, y_test)]
-#         return test_data
-#
-#
-# def read_client_data_text(dataset, idx, is_train=True):
-#     if is_train:
-#         train_data = read_data(dataset, idx, is_train)
-#         X_train, X_train_lens = list(zip(*train_data['x']))
-#         y_train = train_data['y']
-#
-#         X_train = torch.Tensor(X_train).type(torch.int64)
-#         X_train_lens = torch.Tensor(X_train_lens).type(torch.int64)
-#         y_train = torch.Tensor(train_data['y']).type(torch.int64)
-#
-#         train_data = [((x, lens), y) for x, lens, y in zip(X_train, X_train_lens, y_train)]
-#         return train_data
-#     else:
-#         test_data = read_data(dataset, idx, is_train)
-#         X_test, X_test_lens = list(zip(*test_data['x']))
-#         y_test = test_data['y']
-#
-#         X_test = torch.Tensor(X_test).type(torch.int64)
-#         X_test_lens = torch.Tensor(X_test_lens).type(torch.int64)
-#         y_test = torch.Tensor(test_data['y']).type(torch.int64)
-#
-#         test_data = [((x, lens), y) for x, lens, y in zip(X_test, X_test_lens, y_test)]
-#         return test_data
-#
-#
-# def read_client_data_Shakespeare(dataset, idx, is_train=True):
-#     if is_train:
-#         train_data = read_data(dataset, idx, is_train)
-#         X_train = torch.Tensor(train_data['x']).type(torch.int64)
-#         y_train = torch.Tensor(train_data['y']).type(torch.int64)
-#
-#         train_data = [(x, y) for x, y in zip(X_train, y_train)]
-#         return train_data
-#     else:
-#         test_data = read_data(dataset, idx, is_train)
-#         X_test = torch.Tensor(test_data['x']).type(torch.int64)
-#         y_test = torch.Tensor(test_data['y']).type(torch.int64)
-#         test_data = [(x, y) for x, y in zip(X_test, y_test)]
-#         return test_data
+    expected = {
+        "num_clients": int(num_clients),
+        "non_iid": bool(niid),
+        "balance": bool(balance),
+    }
+    mismatches = {
+        key: (config.get(key), value)
+        for key, value in expected.items()
+        if config.get(key) != value
+    }
+
+    try:
+        stored_alpha = float(config["alpha"])
+        requested_alpha = float(alpha)
+        if not np.isclose(stored_alpha, requested_alpha, rtol=0.0, atol=1e-12):
+            mismatches["alpha"] = (stored_alpha, requested_alpha)
+    except (KeyError, TypeError, ValueError):
+        mismatches["alpha"] = (config.get("alpha"), alpha)
+
+    if mismatches:
+        details = ", ".join(
+            f"{key}: stored={stored}, requested={requested}"
+            for key, (stored, requested) in mismatches.items()
+        )
+        raise ValueError(
+            "The selected dataset directory does not match the current "
+            f"experiment arguments ({details}). Check --num_clients, "
+            "--noniid, --balance, and --alpha_dirich, or regenerate the data."
+        )
+
+
+def _resolve_dataset_dir(
+    dataset,
+    num_clients=None,
+    niid=None,
+    balance=None,
+    alpha=None,
+):
+    """
+    Resolve the generated dataset directory.
+
+    The standard generated layout is:
+        dataset/<dataset>/<num_clients>/<balance>_<niid>_<alpha>/
+
+    A small number of legacy datasets use:
+        dataset/<dataset>/{train,test}/
+    """
+    root = _dataset_root()
+    dataset_root = root / str(dataset)
+
+    supplied = [
+        num_clients is not None,
+        niid is not None,
+        balance is not None,
+        alpha is not None,
+    ]
+
+    if any(supplied) and not all(supplied):
+        raise ValueError(
+            "Dataset configuration must provide all of: num_clients, "
+            "niid, balance, and alpha."
+        )
+
+    if all(supplied):
+        setting = f"{bool(balance)}_{bool(niid)}_{float(alpha)}"
+        dataset_dir = dataset_root / str(int(num_clients)) / setting
+
+        if dataset_dir.is_dir():
+            _validate_dataset_config(
+                dataset_dir / "config.json",
+                num_clients=num_clients,
+                niid=niid,
+                balance=balance,
+                alpha=alpha,
+            )
+            return dataset_dir
+
+        # Legacy generators such as Fashion-MNIST use a flat train/test
+        # directory and do not encode the partition in the directory name.
+        if (dataset_root / "train").is_dir() and (dataset_root / "test").is_dir():
+            return dataset_root
+
+        raise FileNotFoundError(
+            "Requested dataset partition was not found.\n"
+            f"Expected directory: {dataset_dir}\n"
+            "For CIFAR-10, generate it from the dataset directory, for example:\n"
+            f"  cd {_dataset_root()}\n"
+            f"  python generate_cifar10.py noniid balance dir "
+            f"{int(num_clients)} {float(alpha)}"
+        )
+
+    # Backward compatibility for callers that do not pass partition
+    # arguments: infer the setting only when exactly one is available.
+    if (dataset_root / "train").is_dir() and (dataset_root / "test").is_dir():
+        return dataset_root
+
+    candidates = sorted(dataset_root.glob("*/*/config.json"))
+    if len(candidates) == 1:
+        return candidates[0].parent
+    if len(candidates) > 1:
+        raise ValueError(
+            f"Multiple generated partitions exist under {dataset_root}. "
+            "Pass num_clients, niid, balance, and alpha explicitly."
+        )
+
+    raise FileNotFoundError(
+        f"No generated dataset found for {dataset!r} under {root}. "
+        "Pass the experiment's dataset configuration and generate the data first."
+    )
+
+
+def _load_npz_record(file_path):
+    if not file_path.is_file():
+        raise FileNotFoundError(f"Dataset file is missing: {file_path}")
+    with np.load(file_path, allow_pickle=True) as archive:
+        if "data" not in archive:
+            raise KeyError(f"NPZ file does not contain a 'data' entry: {file_path}")
+        return archive["data"].tolist()
+
+
+def read_data(
+    dataset,
+    idx,
+    is_train=True,
+    *,
+    num_clients=None,
+    niid=None,
+    balance=None,
+    alpha=None,
+):
+    dataset_dir = _resolve_dataset_dir(
+        dataset,
+        num_clients=num_clients,
+        niid=niid,
+        balance=balance,
+        alpha=alpha,
+    )
+    split = "train" if is_train else "test"
+    file_path = dataset_dir / split / f"{int(idx)}.npz"
+    return _load_npz_record(file_path)
+
+
+def read_test_data(
+    dataset,
+    *,
+    num_clients=None,
+    niid=None,
+    balance=None,
+    alpha=None,
+):
+    dataset_dir = _resolve_dataset_dir(
+        dataset,
+        num_clients=num_clients,
+        niid=niid,
+        balance=balance,
+        alpha=alpha,
+    )
+    return _load_npz_record(dataset_dir / "test" / "test.npz")
+
+
+def client_test_data(
+    dataset,
+    *,
+    num_clients=None,
+    niid=None,
+    balance=None,
+    alpha=None,
+):
+    test_data = read_test_data(
+        dataset,
+        num_clients=num_clients,
+        niid=niid,
+        balance=balance,
+        alpha=alpha,
+    )
+    x_test = torch.as_tensor(test_data["x"], dtype=torch.float32)
+    y_test = torch.as_tensor(test_data["y"], dtype=torch.int64)
+    return list(zip(x_test, y_test))
+
+
+def read_client_data(
+    dataset,
+    idx,
+    is_train=True,
+    *,
+    num_clients=None,
+    niid=None,
+    balance=None,
+    alpha=None,
+):
+    data = read_data(
+        dataset,
+        idx,
+        is_train=is_train,
+        num_clients=num_clients,
+        niid=niid,
+        balance=balance,
+        alpha=alpha,
+    )
+    x = torch.as_tensor(data["x"], dtype=torch.float32)
+    y = torch.as_tensor(data["y"], dtype=torch.int64)
+    return list(zip(x, y))
+
+
+def read_client_data_text(
+    dataset,
+    idx,
+    niid,
+    balance,
+    alpha,
+    is_train=True,
+    num_clients=None,
+):
+    data = read_data(
+        dataset,
+        idx,
+        is_train=is_train,
+        num_clients=num_clients,
+        niid=niid,
+        balance=balance,
+        alpha=alpha,
+    )
+
+    x_values, x_lengths = zip(*data["x"])
+    x_tensor = torch.as_tensor(x_values, dtype=torch.int64)
+    length_tensor = torch.as_tensor(x_lengths, dtype=torch.int64)
+    y_tensor = torch.as_tensor(data["y"], dtype=torch.int64)
+
+    return [
+        ((x, length), label)
+        for x, length, label in zip(x_tensor, length_tensor, y_tensor)
+    ]
+
+
+def read_client_data_shakespeare(
+    dataset,
+    idx,
+    niid,
+    balance,
+    alpha,
+    is_train=True,
+    num_clients=None,
+):
+    data = read_data(
+        dataset,
+        idx,
+        is_train=is_train,
+        num_clients=num_clients,
+        niid=niid,
+        balance=balance,
+        alpha=alpha,
+    )
+
+    x_tensor = torch.as_tensor(data["x"], dtype=torch.int64)
+    y_tensor = torch.as_tensor(data["y"], dtype=torch.int64)
+    return list(zip(x_tensor, y_tensor))
