@@ -337,7 +337,6 @@ if __name__ == "__main__":
     parser.add_argument('-gam',"--omg_gamma", type=float, default=0.5, help='omg gamma')
     parser.add_argument('--omg_c', type=float, default=0.5, help='FedOMG searching radius kappa')
     parser.add_argument('--omg_meta_lr', type=float, default=1.0, help='omg meta learning rate')
-    parser.add_argument('--grad_balance', action='store_true', help='Enable gradient balancing')
 
     args = parser.parse_args()
 
