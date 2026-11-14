@@ -284,41 +284,77 @@ class Server(object):
     # this function will update the global model
     # need to see where the global model go
 
+    def _global_model_path(self):
+        project_root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "../../../")
+        )
+        model_dir = os.path.join(project_root, "models", self.dataset)
+
+        run_seed = getattr(self.args, "run_seed", None)
+        if run_seed is None:
+            filename = self.algorithm + "_server.pt"
+        else:
+            filename = f"{self.algorithm}_server_seed_{int(run_seed)}.pt"
+
+        return os.path.join(model_dir, filename)
+
     def save_global_model(self):
-        model_path = os.path.join("models", self.dataset)
-        if not os.path.exists(model_path):
-            os.makedirs(model_path)
-        model_path = os.path.join(model_path, self.algorithm + "_server" + ".pt")
+        model_path = self._global_model_path()
+        os.makedirs(os.path.dirname(model_path), exist_ok=True)
         torch.save(self.global_model, model_path)
+        print(f"Global model saved to: {model_path}")
 
     def load_model(self):
-        model_path = os.path.join("models", self.dataset)
-        model_path = os.path.join(model_path, self.algorithm + "_server" + ".pt")
-        assert (os.path.exists(model_path))
-        self.global_model = torch.load(model_path)
+        model_path = self._global_model_path()
+        if not os.path.isfile(model_path):
+            raise FileNotFoundError(f"Saved global model not found: {model_path}")
+        self.global_model = torch.load(model_path, map_location=self.device)
 
     def model_exists(self):
-        model_path = os.path.join("models", self.dataset)
-        model_path = os.path.join(model_path, self.algorithm + "_server" + ".pt")
-        return os.path.exists(model_path)
+        return os.path.isfile(self._global_model_path())
 
     def save_results(self):
-        algo = self.dataset + "_" + self.algorithm
-        result_path = "../results/"
-        if not os.path.exists(result_path):
-            os.makedirs(result_path)
+        project_root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "../../../")
+        )
+        result_dir = os.path.join(project_root, "results")
+        os.makedirs(result_dir, exist_ok=True)
 
-        if (len(self.rs_test_acc)):
-            algo = algo + "_" + self.goal + "_" + str(self.times)
-            # algo = (algo + "_" + self.model_str + "_" + str(self.batch_size) + "_" + str(self.global_rounds) + "_" + str(self.cagrad_rounds)
-            #         + "_" + str(self.ca_lr) + "_" + str(self.mmt) + "_" + str(self.ss) + "_" + str(self.gam))
-            file_path = result_path + "{}.h5".format(algo)
-            print("File path: " + file_path)
+        if not self.rs_test_acc:
+            print("No evaluation results to save.")
+            return
 
-            with h5py.File(file_path, 'w') as hf:
-                hf.create_dataset('rs_test_acc', data=self.rs_test_acc)
-                hf.create_dataset('rs_test_auc', data=self.rs_test_auc)
-                hf.create_dataset('rs_train_loss', data=self.rs_train_loss)
+        file_name = (
+            f"{self.dataset}_{self.algorithm}_{self.goal}_{self.times}.h5"
+        )
+        file_path = os.path.join(result_dir, file_name)
+
+        with h5py.File(file_path, "w") as hf:
+            hf.create_dataset("rs_test_acc", data=np.asarray(self.rs_test_acc))
+            hf.create_dataset("rs_test_auc", data=np.asarray(self.rs_test_auc))
+            hf.create_dataset("rs_train_loss", data=np.asarray(self.rs_train_loss))
+
+            # Store the configuration alongside the curves so each result
+            # can be traced back to its exact experimental setting.
+            metadata = {
+                "dataset": self.dataset,
+                "algorithm": self.algorithm,
+                "goal": self.goal,
+                "run_index": int(self.times),
+                "seed": getattr(self.args, "run_seed", -1),
+                "num_clients": self.num_clients,
+                "join_ratio": self.join_ratio,
+                "global_rounds": self.global_rounds,
+                "local_epochs": self.local_epochs,
+                "batch_size": self.batch_size,
+                "local_learning_rate": self.learning_rate,
+                "num_evaluations": len(self.rs_test_acc),
+            }
+            for key, value in metadata.items():
+                if value is not None:
+                    hf.attrs[key] = value
+
+        print(f"Results saved to: {file_path}")
 
     def save_item(self, item, item_name):
         if not os.path.exists(self.save_folder_name):
