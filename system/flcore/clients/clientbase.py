@@ -80,19 +80,41 @@ class Client(object):
     def load_train_data(self, batch_size=None):
         if batch_size == None:
             batch_size = self.batch_size
-        train_data = read_client_data(self.dataset, self.id, is_train=True)
+        train_data = read_client_data(
+            self.dataset,
+            self.id,
+            is_train=True,
+            num_clients=self.num_clients,
+            niid=self.args.noniid,
+            balance=self.args.balance,
+            alpha=self.args.alpha_dirich,
+        )
         return DataLoader(train_data, batch_size, drop_last=True, shuffle=True)
 
     def load_test_data(self, batch_size=None):
         if batch_size == None:
             batch_size = self.batch_size
-        test_data = read_client_data(self.dataset, self.id, is_train=False)
+        test_data = read_client_data(
+            self.dataset,
+            self.id,
+            is_train=False,
+            num_clients=self.num_clients,
+            niid=self.args.noniid,
+            balance=self.args.balance,
+            alpha=self.args.alpha_dirich,
+        )
         return DataLoader(test_data, batch_size, drop_last=False, shuffle=True)
 
     def load_full_test_data(self, batch_size=None):
         if batch_size == None:
             batch_size = self.batch_size
-        test_data = client_test_data(self.dataset)
+        test_data = client_test_data(
+            self.dataset,
+            num_clients=self.num_clients,
+            niid=self.args.noniid,
+            balance=self.args.balance,
+            alpha=self.args.alpha_dirich,
+        )
         return DataLoader(test_data, batch_size, drop_last=False, shuffle=True)
     '''
     This for domain code
