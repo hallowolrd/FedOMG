@@ -348,6 +348,16 @@ class Server(object):
                 "local_epochs": self.local_epochs,
                 "batch_size": self.batch_size,
                 "local_learning_rate": self.learning_rate,
+                "num_classes": self.num_classes,
+                "noniid": getattr(self.args, "noniid", None),
+                "balance": getattr(self.args, "balance", None),
+                "alpha_dirich": getattr(self.args, "alpha_dirich", None),
+                "omg_kappa": getattr(self.args, "omg_c", None),
+                "omg_rounds": getattr(self.args, "omg_rounds", None),
+                "omg_learning_rate": getattr(self.args, "omg_learning_rate", None),
+                "omg_momentum": getattr(self.args, "omg_momentum", None),
+                "omg_meta_lr": getattr(self.args, "omg_meta_lr", None),
+                "eval_gap": self.eval_gap,
                 "num_evaluations": len(self.rs_test_acc),
             }
             for key, value in metadata.items():
