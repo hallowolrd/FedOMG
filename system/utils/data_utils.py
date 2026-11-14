@@ -182,7 +182,43 @@ def read_test_data(
         balance=balance,
         alpha=alpha,
     )
-    return _load_npz_record(dataset_dir / "test" / "test.npz")
+    test_dir = dataset_dir / "test"
+    merged_test_file = test_dir / "test.npz"
+
+    # Some legacy datasets provide one merged test.npz. The standard
+    # CIFAR/MNIST generators instead save one test file per client.
+    if merged_test_file.is_file():
+        return _load_npz_record(merged_test_file)
+
+    if num_clients is None:
+        client_files = sorted(
+            (path for path in test_dir.glob("*.npz") if path.stem.isdigit()),
+            key=lambda path: int(path.stem),
+        )
+    else:
+        client_files = [
+            test_dir / f"{client_id}.npz"
+            for client_id in range(int(num_clients))
+        ]
+
+    if not client_files:
+        raise FileNotFoundError(
+            f"No merged or per-client test files were found under {test_dir}"
+        )
+
+    missing_files = [path for path in client_files if not path.is_file()]
+    if missing_files:
+        missing_preview = ", ".join(str(path) for path in missing_files[:5])
+        raise FileNotFoundError(
+            f"Missing {len(missing_files)} client test file(s) under {test_dir}: "
+            f"{missing_preview}"
+        )
+
+    records = [_load_npz_record(path) for path in client_files]
+    return {
+        "x": np.concatenate([np.asarray(record["x"]) for record in records], axis=0),
+        "y": np.concatenate([np.asarray(record["y"]) for record in records], axis=0),
+    }
 
 
 def client_test_data(
