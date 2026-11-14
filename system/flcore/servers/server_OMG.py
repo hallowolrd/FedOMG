@@ -1,49 +1,55 @@
 import copy
 import time
+
+import torch
+from torch.nn.utils import vector_to_parameters
+from torch.optim.lr_scheduler import StepLR
+
 from flcore.clients.client_OMG import client_OMG
 from flcore.servers.serverbase import Server
-from threading import Thread
-import numpy as np
-import torch
-from torch.optim.lr_scheduler import StepLR
-from torch.nn.utils import vector_to_parameters, parameters_to_vector
 from utils.model_utils import ParamDict
-import quadprog
 
 
 def tensor_diagnostics(name, tensor):
-    x = tensor.detach().float()
-    finite = torch.isfinite(x)
-    count = finite.sum().item()
+    """Print compact numerical diagnostics for a tensor."""
+    values = tensor.detach().float()
+    finite_mask = torch.isfinite(values)
+    finite_count = int(finite_mask.sum().item())
 
-    if count:
-        values = x[finite]
+    if finite_count == 0:
         print(
-            f"[DIAG] {name}: "
-            f"shape={tuple(x.shape)}, "
-            f"norm={values.norm().item():.6e}, "
-            f"mean={values.mean().item():.6e}, "
-            f"max={values.abs().max().item():.6e}, "
-            f"finite={count}/{x.numel()}",
-            flush=True
+            f"[DIAG] {name}: shape={tuple(values.shape)}, "
+            "NO FINITE VALUES",
+            flush=True,
         )
-    else:
-        print(f"[DIAG] {name}: NO FINITE VALUES", flush=True)
+        return
+
+    finite_values = values[finite_mask]
+    print(
+        f"[DIAG] {name}: "
+        f"shape={tuple(values.shape)}, "
+        f"norm={finite_values.norm().item():.6e}, "
+        f"mean={finite_values.mean().item():.6e}, "
+        f"max_abs={finite_values.abs().max().item():.6e}, "
+        f"finite={finite_count}/{values.numel()}",
+        flush=True,
+    )
 
 
 def model_diagnostics(name, model):
-    params = torch.cat([
-        p.detach().reshape(-1)
-        for p in model.parameters()
-    ])
-    tensor_diagnostics(name, params)
+    parameters = [p.detach().reshape(-1) for p in model.parameters()]
+    if not parameters:
+        print(f"[DIAG] {name}: model has no parameters", flush=True)
+        return
+    tensor_diagnostics(name, torch.cat(parameters))
 
 
 class FedOMG(Server):
+    """Federated Learning via On-server Matching Gradient."""
+
     def __init__(self, args, times):
         super().__init__(args, times)
 
-        # select slow clients
         self.set_slow_clients()
         self.set_clients(client_OMG)
 
@@ -58,296 +64,373 @@ class FedOMG(Server):
         self.omg_rounds = args.omg_rounds
         self.omg_momentum = args.omg_momentum
         self.omg_gamma = args.omg_gamma
-
         self.omg_meta_lr = args.omg_meta_lr
-        self.grad_balance = args.grad_balance
 
-        self.gm_flag = "gem" # "ca_grad" # "gem"
+        # The command-line flag is added in the experiment-configuration
+        # repair. Until then, diagnostics are disabled by default.
+        self.debug = getattr(args, "debug", False)
 
+        if self.omg_c < 0:
+            raise ValueError(f"omg_c (kappa) must be non-negative, got {self.omg_c}")
+        if self.omg_rounds < 0:
+            raise ValueError(
+                f"omg_rounds must be non-negative, got {self.omg_rounds}"
+            )
+        if self.omg_rounds > 0 and self.omg_learning_rate <= 0:
+            raise ValueError(
+                "omg_learning_rate must be positive when omg_rounds > 0"
+            )
+        if self.omg_rounds > 0 and self.omg_step_size <= 0:
+            raise ValueError(
+                "omg_step_size must be positive when omg_rounds > 0"
+            )
+        if self.eval_gap <= 0:
+            raise ValueError(f"eval_gap must be positive, got {self.eval_gap}")
 
     def train(self):
-        for i in range(self.global_rounds+1):
-            s_t = time.time()
+        # Evaluate the initial global model at round 0. The loop below then
+        # performs exactly global_rounds local-training/server-update rounds.
+        print("\n-------------Round number: 0-------------")
+        print("\nEvaluate initial global model")
+        self.evaluate()
+
+        for round_idx in range(1, self.global_rounds + 1):
+            start_time = time.time()
+
             self.selected_clients = self.select_clients()
             self.send_models()
-
-            if i % self.eval_gap == 0:
-                print(f"\n-------------Round number: {i}-------------")
-                print("\nEvaluate global model")
-                self.evaluate()
 
             for client in self.selected_clients:
                 client.train()
 
-
             self.receive_models()
 
-            # DIAG: client models
-            print("\\n========== DIAG: CLIENT MODELS ==========", flush=True)
+            if not self.uploaded_models:
+                raise RuntimeError(
+                    f"No client model was uploaded at round {round_idx}. "
+                    "Check client_drop_rate, time_threthold, and client selection."
+                )
 
-            model_diagnostics("Global model before OMG", self.global_model)
+            if self.debug:
+                print("\n========== DIAG: CLIENT MODELS ==========", flush=True)
+                print("Uploaded client IDs:", self.uploaded_ids, flush=True)
+                print("Uploaded clients:", len(self.uploaded_models), flush=True)
+                model_diagnostics("Global model before OMG", self.global_model)
+                for client_id, model in zip(self.uploaded_ids, self.uploaded_models):
+                    model_diagnostics(f"Client {client_id} model", model)
+                print("========== END CLIENT MODELS ==========", flush=True)
 
-            print("Uploaded clients:", len(self.uploaded_models))
-
-            for idx, model in enumerate(self.uploaded_models):
-                model_diagnostics(f"Client {idx} model", model)
-
-            print("========== END CLIENT DIAGNOSTICS ==========",
-                  flush=True)
-            self.receive_grads()
-
-            meta_weights = self.omg_high(
+            # FedOMG constructs the client model deltas directly. Calling
+            # receive_grads() here is unnecessary: that method pre-multiplies
+            # each individual delta by its FedAvg weight, whereas Eq. (15)
+            # needs the unweighted client deltas plus a separate reference
+            # FedAvg weight vector.
+            updated_state = self.omg_high(
                 meta_weights=self.global_model,
                 inner_weights=self.uploaded_models,
-                lr_meta= self.omg_meta_lr
+                lr_meta=self.omg_meta_lr,
             )
-            self.global_model.load_state_dict(copy.deepcopy(meta_weights))
+            self.global_model.load_state_dict(copy.deepcopy(updated_state))
 
-            self.Budget.append(time.time() - s_t)
-            print('-'*25, 'time cost', '-'*25, self.Budget[-1])
+            round_time = time.time() - start_time
+            self.Budget.append(round_time)
 
-            if self.auto_break and self.check_done(acc_lss=[self.rs_test_acc], top_cnt=self.top_cnt):
+            if round_idx % self.eval_gap == 0 or round_idx == self.global_rounds:
+                print(f"\n-------------Round number: {round_idx}-------------")
+                print("\nEvaluate global model")
+                self.evaluate()
+
+            print("-" * 25, "time cost", "-" * 25, round_time)
+
+            if self.auto_break and self.check_done(
+                acc_lss=[self.rs_test_acc],
+                top_cnt=self.top_cnt,
+            ):
+                print(f"Early stopping triggered at round {round_idx}.")
                 break
 
-        print("\nBest accuracy.")
-        print(max(self.rs_test_acc))
-        print("\nAverage time cost per round.")
-        print(sum(self.Budget[1:])/len(self.Budget[1:]))
+        if self.rs_test_acc:
+            print("\nBest accuracy.")
+            print(max(self.rs_test_acc))
+
+        if self.Budget:
+            print("\nAverage time cost per round.")
+            print(sum(self.Budget) / len(self.Budget))
 
         self.save_results()
         self.save_global_model()
 
-
     def omg_high(self, meta_weights, inner_weights, lr_meta):
         """
-        Input:
-        - meta_weights: class X(nn.Module)
-        - inner_weights: list[X(nn.Module), X(nn.Module), ..., X(nn.Module)]
-        - lr_meta: scalar value
+        Build client parameter deltas, solve Eq. (15), and apply Eq. (16).
 
-        Output:
-        - meta_weights: class X(nn.Module)
+        Each column of gradient_matrix is
+            g_u = theta_local_u - theta_global.
 
+        uploaded_weights contains the normalized sample-count weights
+        generated by Server.receive_models().
         """
-        all_domain_grads = []
-        flatten_meta_weights = torch.cat([param.view(-1) for param in meta_weights.parameters()])
-        for i_domain in range(int(self.num_clients*self.join_ratio)):
-            domain_grad_diffs = [torch.flatten(inner_param - meta_param) for inner_param, meta_param in
-                                 zip(inner_weights[i_domain].parameters(), meta_weights.parameters())]
-            domain_grad_vector = torch.cat(domain_grad_diffs)
-            all_domain_grads.append(domain_grad_vector)
+        if len(inner_weights) == 0:
+            raise ValueError("FedOMG received no client models.")
 
-        """
-        - Grads normalization.
-        """
-        if self.grad_balance:
-            # Apply balancing
-            # Step 1: Compute norms for each gradient vector
-            domain_grad_norms = [torch.norm(grad) for grad in all_domain_grads]
+        if len(self.uploaded_weights) != len(inner_weights):
+            raise ValueError(
+                "Uploaded model/weight count mismatch: "
+                f"{len(inner_weights)} models vs "
+                f"{len(self.uploaded_weights)} weights."
+            )
 
-            # Step 2: Determine scaling factors to balance the norms
-            # Example: Scale all norms to a target value (e.g., the average norm)
-            target_norm = torch.mean(torch.tensor(domain_grad_norms))
-            scaling_factors = [target_norm / norm if norm > 0 else 1.0 for norm in domain_grad_norms]
+        global_named_parameters = list(meta_weights.named_parameters())
+        if not global_named_parameters:
+            raise ValueError("The global model has no trainable parameters.")
 
-            # Step 3: Scale gradient vectors
-            balanced_retain_grads = [grad * scale for grad, scale in zip(domain_grad_norms, scaling_factors)]
+        global_names = [name for name, _ in global_named_parameters]
+        global_parameters = dict(global_named_parameters)
 
-            # Step 4: Stack the balanced gradients into a tensor
-            all_domains_grad_tensor = torch.stack(balanced_retain_grads).t()
-        else:
-            all_domains_grad_tensor = torch.stack(all_domain_grads).t()
+        client_deltas = []
+        for client_index, client_model in enumerate(inner_weights):
+            client_named_parameters = list(client_model.named_parameters())
+            client_names = [name for name, _ in client_named_parameters]
 
-        all_domains_grad_tensor = torch.stack(all_domain_grads).t()
+            if client_names != global_names:
+                raise ValueError(
+                    f"Parameter-name mismatch for uploaded client index "
+                    f"{client_index}."
+                )
 
-        # DIAG: client gradients
-        print("\\n========== DIAG: CLIENT GRADIENTS ==========",
-              flush=True)
+            client_parameters = dict(client_named_parameters)
+            delta_parts = []
 
-        tensor_diagnostics("All domain gradients", all_domains_grad_tensor)
+            for name in global_names:
+                global_parameter = global_parameters[name]
+                client_parameter = client_parameters[name]
 
-        for idx, grad in enumerate(all_domain_grads):
-            tensor_diagnostics(f"Client gradient {idx}", grad)
+                if global_parameter.shape != client_parameter.shape:
+                    raise ValueError(
+                        f"Parameter-shape mismatch for {name}: "
+                        f"global={tuple(global_parameter.shape)}, "
+                        f"client={tuple(client_parameter.shape)}"
+                    )
 
-        mean_gradient = all_domains_grad_tensor.mean(dim=1)
+                delta_parts.append(
+                    (
+                        client_parameter.detach()
+                        - global_parameter.detach()
+                    ).reshape(-1)
+                )
 
-        tensor_diagnostics("Mean client gradient", mean_gradient)
+            client_deltas.append(torch.cat(delta_parts))
 
-        print("========== END CLIENT GRADIENTS ==========",
-              flush=True)
+        # Shape: [number_of_model_parameters, number_of_uploaded_clients].
+        gradient_matrix = torch.stack(client_deltas, dim=1)
 
-
-        # print(all_domains_grad_tensor)
-        if self.gm_flag == "ca_grad":
-            g = self.omg_low(all_domains_grad_tensor, int(self.num_clients*self.join_ratio))
-        else:
-            g = project2cone2(all_domains_grad_tensor,
-                              int(self.num_clients*self.join_ratio), margin=0.5, eps=1e-3).to(self.device)
-
-
-        # DIAG: GEM projection
-        print("\\n========== DIAG: GEM PROJECTION ==========",
-              flush=True)
-
-        tensor_diagnostics("Projected gradient g", g)
-        tensor_diagnostics("Mean client gradient", mean_gradient)
-
-        print("OMG Meta LR:", lr_meta)
-
-        print(
-            "Gradient norm ratio:",
-            g.norm().item() /
-            (mean_gradient.norm().item() + 1e-12)
+        sample_weights = torch.as_tensor(
+            self.uploaded_weights,
+            dtype=gradient_matrix.dtype,
+            device=gradient_matrix.device,
         )
 
-        print("========== END GEM PROJECTION ==========",
-              flush=True)
+        if not torch.isfinite(sample_weights).all():
+            raise FloatingPointError("Uploaded client weights contain NaN/Inf.")
+        if (sample_weights < 0).any() or sample_weights.sum().item() <= 0:
+            raise ValueError(
+                "Uploaded client weights must be non-negative "
+                "and have a positive sum."
+            )
 
-        # DIAG: server update
-        print("\\n========== DIAG: SERVER UPDATE ==========",
-              flush=True)
+        # Normalize again to protect against small numerical drift.
+        sample_weights = sample_weights / sample_weights.sum()
 
-        tensor_diagnostics("Meta weights before update",
-                           flatten_meta_weights)
+        g_fl = gradient_matrix @ sample_weights
 
-        update = g * lr_meta
-
-        tensor_diagnostics("Actual server update", update)
-
-        updated_weights = flatten_meta_weights + update
-
-        tensor_diagnostics("Meta weights after update",
-                           updated_weights)
-
-        print(
-            "Relative update magnitude:",
-            update.norm().item() /
-            (flatten_meta_weights.norm().item() + 1e-12)
+        g_igd, gamma, objective = self.omg_low(
+            gradient_matrix=gradient_matrix,
+            reference_weights=sample_weights,
         )
 
-        print("========== END SERVER UPDATE ==========",
-              flush=True)
+        if not torch.isfinite(g_igd).all():
+            raise FloatingPointError("FedOMG produced NaN/Inf in g_IGD.")
 
-        flatten_meta_weights += g * lr_meta
+        if self.debug:
+            tensor_diagnostics("FedAvg reference update g_FL", g_fl)
+            tensor_diagnostics("FedOMG invariant update g_IGD", g_igd)
+            print(
+                "[DIAG] gamma: "
+                f"sum={gamma.sum().item():.8f}, "
+                f"min={gamma.min().item():.8e}, "
+                f"max={gamma.max().item():.8e}, "
+                f"objective={objective:.8e}",
+                flush=True,
+            )
+            print(
+                "[DIAG] update norm ratio ||g_IGD||/||g_FL||: "
+                f"{g_igd.norm().item() / (g_fl.norm().item() + 1e-12):.8e}",
+                flush=True,
+            )
+            print(f"[DIAG] server meta learning rate: {lr_meta}", flush=True)
 
-        vector_to_parameters(flatten_meta_weights, meta_weights.parameters())
-        meta_weights = ParamDict(meta_weights.state_dict())
+        flat_global_parameters = torch.cat(
+            [parameter.detach().reshape(-1) for _, parameter in global_named_parameters]
+        )
 
-        return meta_weights
+        # g_u is a parameter delta (local - global), i.e. the direction
+        # that FedAvg adds to the global parameters. Therefore we ADD the
+        # FedOMG delta here, matching the official implementation's update
+        # convention and standard model-delta aggregation.
+        updated_flat_parameters = (
+            flat_global_parameters + float(lr_meta) * g_igd
+        )
 
-    def omg_low(self, grad_vec, num_tasks):
+        if not torch.isfinite(updated_flat_parameters).all():
+            raise FloatingPointError(
+                "FedOMG produced NaN/Inf in the updated global parameters."
+            )
 
-        grads = grad_vec.to(self.device)
+        with torch.no_grad():
+            vector_to_parameters(
+                updated_flat_parameters,
+                meta_weights.parameters(),
+            )
 
-        GG = grads.t().mm(grads)
-        # to(device)
-        scale = (torch.diag(GG) + 1e-4).sqrt().mean()
-        GG = GG / scale.pow(2)
-        Gg = GG.mean(1, keepdims=True)
-        gg = Gg.mean(0, keepdims=True)
+        return ParamDict(meta_weights.state_dict())
 
-        w = torch.zeros(num_tasks, 1, requires_grad=True, device=self.device)
-        #         w = torch.zeros(num_tasks, 1, requires_grad=True).to(self.device)
+    def omg_low(self, gradient_matrix, reference_weights):
+        """
+        Optimize Gamma* for Eq. (15), then calculate g_IGD using Eq. (16).
 
-        if num_tasks == 50:
-            w_opt = torch.optim.SGD([w], lr=self.omg_learning_rate * 2, momentum=self.omg_momentum)
-        else:
-            w_opt = torch.optim.SGD([w], lr=self.omg_learning_rate, momentum=self.omg_momentum)
+        Args:
+            gradient_matrix: Tensor [P, K], each column is one uploaded
+                client's unweighted parameter delta.
+            reference_weights: Tensor [K], normalized sample-count weights.
 
-        scheduler = StepLR(w_opt, step_size=self.omg_step_size, gamma=self.omg_gamma)
+        Returns:
+            g_igd: FedOMG invariant update, Tensor [P].
+            best_gamma: non-negative coefficients summing to one, Tensor [K].
+            best_objective: optimized Eq. (15) objective (up to a positive
+                common normalization factor).
+        """
+        if gradient_matrix.ndim != 2:
+            raise ValueError(
+                "gradient_matrix must be a 2-D tensor [num_parameters, num_clients]."
+            )
 
-        c = (gg + 1e-4).sqrt() * self.omg_c
+        num_parameters, num_clients = gradient_matrix.shape
+        if num_parameters == 0 or num_clients == 0:
+            raise ValueError("gradient_matrix must not be empty.")
+        if reference_weights.numel() != num_clients:
+            raise ValueError(
+                "reference_weights length must equal the number of client updates."
+            )
 
-        w_best = None
-        obj_best = np.inf
-        for i in range(self.omg_rounds + 1):
-            w_opt.zero_grad()
-            ww = torch.softmax(w, dim=0)
-            obj = ww.t().mm(Gg) + c * (ww.t().mm(GG).mm(ww) + 1e-4).sqrt()
-            print(f"step at {i} is {obj}")
-            if obj.item() < obj_best:
-                obj_best = obj.item()
-                w_best = w.clone()
-            if i < self.omg_rounds:
-                obj.backward(retain_graph=True)
-                w_opt.step()
+        kappa = float(self.omg_c)
+        eps = 1e-12
+
+        # The reference update is the weighted FedAvg model delta.
+        g_fl = gradient_matrix @ reference_weights
+        g_fl_norm = torch.linalg.vector_norm(g_fl)
+
+        uniform_gamma = torch.full(
+            (num_clients,),
+            1.0 / num_clients,
+            dtype=gradient_matrix.dtype,
+            device=gradient_matrix.device,
+        )
+
+        # Corollary 1: when kappa -> 0, FedOMG reduces to the reference FL
+        # update. This also avoids an unnecessary optimization pass.
+        if kappa == 0.0 or g_fl_norm.item() <= eps:
+            return g_fl, uniform_gamma, 0.0
+
+        # Form the K x K Gram matrix. This avoids repeatedly operating on
+        # the full model-parameter dimension during Gamma optimization.
+        gram = gradient_matrix.transpose(0, 1) @ gradient_matrix
+        gram = 0.5 * (gram + gram.transpose(0, 1))
+
+        # Divide the Gram matrix by a positive scalar for numerical
+        # conditioning. This does not change the minimizer of Eq. (15).
+        scale_squared = torch.diagonal(gram).mean().clamp_min(eps)
+        normalized_gram = gram / scale_squared
+
+        cross_term = normalized_gram @ reference_weights
+        reference_norm_scaled = torch.sqrt(
+            torch.clamp(
+                reference_weights @ normalized_gram @ reference_weights,
+                min=0.0,
+            )
+        )
+
+        logits = torch.zeros(
+            num_clients,
+            dtype=gradient_matrix.dtype,
+            device=gradient_matrix.device,
+            requires_grad=True,
+        )
+
+        optimizer = torch.optim.SGD(
+            [logits],
+            lr=self.omg_learning_rate,
+            momentum=self.omg_momentum,
+        )
+        scheduler = StepLR(
+            optimizer,
+            step_size=self.omg_step_size,
+            gamma=self.omg_gamma,
+        )
+
+        best_gamma = uniform_gamma.detach().clone()
+        best_objective = float("inf")
+
+        for step in range(self.omg_rounds + 1):
+            optimizer.zero_grad()
+
+            gamma = torch.softmax(logits, dim=0)
+            mixed_norm_scaled = torch.sqrt(
+                torch.clamp(
+                    gamma @ normalized_gram @ gamma,
+                    min=eps,
+                )
+            )
+
+            # Eq. (15):
+            # min_Gamma <Gamma G, g_FL> + kappa * ||g_FL|| * ||Gamma G||
+            # The normalized Gram matrix scales the complete objective by
+            # one positive constant, leaving Gamma* unchanged.
+            objective = (
+                torch.dot(gamma, cross_term)
+                + kappa * reference_norm_scaled * mixed_norm_scaled
+            )
+
+            if not torch.isfinite(objective):
+                raise FloatingPointError(
+                    f"Non-finite FedOMG objective at optimizer step {step}."
+                )
+
+            objective_value = float(objective.detach().item())
+            if objective_value < best_objective:
+                best_objective = objective_value
+                best_gamma = gamma.detach().clone()
+
+            if step < self.omg_rounds:
+                objective.backward()
+                optimizer.step()
                 scheduler.step()
 
-                # Check this scheduler. step()
+        mixed_update = gradient_matrix @ best_gamma
+        mixed_update_norm = torch.linalg.vector_norm(mixed_update)
 
-        ww = torch.softmax(w_best, dim=0)
-        gw_norm = (ww.t().mm(GG).mm(ww) + 1e-4).sqrt()
+        if mixed_update_norm.item() <= eps:
+            # Eq. (16) is undefined if ||Gamma* G|| is zero. In this
+            # degenerate case, fall back to the well-defined FedAvg update.
+            g_igd = g_fl
+        else:
+            # Eq. (16). Do NOT divide by (1 + kappa**2): that factor is not
+            # present in the FedOMG paper's Theorem 1 / Algorithm 1.
+            g_igd = (
+                g_fl
+                + kappa
+                * g_fl_norm
+                / mixed_update_norm
+                * mixed_update
+            )
 
-        lmbda = c.view(-1) / (gw_norm + 1e-4)
-        g = ((1 / num_tasks + ww * lmbda).view(
-            -1, 1).to(grads.device) * grads.t()).sum(0) / (1 + self.omg_c ** 2)
-        return g
-
-
-    def overwrite_grad2(self, m, newgrad):
-        newgrad = newgrad * self.num_clients
-        for param in m.parameters():
-
-            num_elements = param.numel()
-
-            param_slice = newgrad[:num_elements]
-
-            param.grad = param_slice.view(param.data.size())
-
-            newgrad = newgrad[num_elements:]
-
-
-# def project2cone2(gradient, domain_num, margin=0.5, eps=1e-3):
-#     """
-#         Solves the GEM dual QP described in the paper given a proposed
-#         gradient "gradient", and a memory of task gradients "memories".
-#         Overwrites "gradient" with the final projected update.
-#
-#         input:  gradient, p-vector
-#         input:  memories, (t * p)-vector
-#         output: x, p-vector
-#     """
-#     print(f"gradient tensor: {gradient.size()}")
-#     memories_np = gradient[:,0:domain_num-1].cpu().t().detach().double().numpy()
-#     gradient_np = gradient[:,domain_num-1:domain_num].cpu().contiguous().view(-1).detach().double().numpy()
-#     print(f"memories: {np.shape(memories_np)} | gradient: {np.shape(gradient_np)}")
-#     t = memories_np.shape[0]
-#     P = np.dot(memories_np, memories_np.transpose())
-#     P = 0.5 * (P + P.transpose()) + np.eye(t) * eps
-#     q = np.dot(memories_np, gradient_np) * -1
-#     G = np.eye(t)
-#     h = np.zeros(t) + margin
-#     print(f"P: {np.shape(P)} | q: {np.shape(q)} | G: {np.shape(G)} | h: {np.shape(h)}")
-#     v = quadprog.solve_qp(P, q, G, h)[0]
-#     x = np.dot(v, memories_np) + gradient_np
-#
-#     output = torch.Tensor(x).view(-1)
-#     return output
-
-
-def project2cone2(gradient, domain_num, margin=0.5, eps=1e-3):
-    """
-        Solves the GEM dual QP described in the paper given a proposed
-        gradient "gradient", and a memory of task gradients "memories".
-        Overwrites "gradient" with the final projected update.
-
-        input:  gradient, p-vector
-        input:  memories, (t * p)-vector
-        output: x, p-vector
-    """
-    print(f"gradient tensor: {gradient.size()}")
-    memories_np = gradient[:,:].cpu().t().detach().double().numpy()
-    gradient_np = gradient.mean(1).cpu().contiguous().view(-1).detach().double().numpy()
-    print(f"memories: {np.shape(memories_np)} | gradient: {np.shape(gradient_np)}")
-    t = memories_np.shape[0]
-    P = np.dot(memories_np, memories_np.transpose())
-    P = 0.5 * (P + P.transpose()) + np.eye(t) * eps
-    q = np.dot(memories_np, gradient_np) * -1
-    G = np.eye(t)
-    h = np.zeros(t) + margin
-    print(f"P: {np.shape(P)} | q: {np.shape(q)} | G: {np.shape(G)} | h: {np.shape(h)}")
-    v = quadprog.solve_qp(P, q, G, h)[0]
-    x = np.dot(v, memories_np) + gradient_np
-
-    output = torch.Tensor(x).view(-1)
-    return output
+        return g_igd, best_gamma, best_objective
