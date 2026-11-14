@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import copy
+import random
 import torch
 import argparse
 import os
@@ -36,7 +37,19 @@ logger = logging.getLogger()
 logger.setLevel(logging.ERROR)
 
 warnings.simplefilter("ignore")
-torch.manual_seed(0)
+
+
+def set_random_seed(seed):
+    """Seed Python, NumPy, and PyTorch RNGs for one independent run."""
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+    # Prefer reproducibility over cuDNN autotuning variability.
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 # hyper-params for Text tasks
 vocab_size = 98635
@@ -50,7 +63,12 @@ def run(args):
     model_str = args.model_str
 
     for i in range(args.prev, args.times):
+        run_seed = args.seed + i
+        set_random_seed(run_seed)
+        args.run_seed = run_seed
+
         print(f"\n============= Running time: {i}th =============")
+        print(f"Random seed: {run_seed}")
         print("Creating server and clients ...")
         start = time.time()
 
@@ -245,6 +263,10 @@ if __name__ == "__main__":
                         help="Previous Running times")
     parser.add_argument('-t', "--times", type=int, default=1,
                         help="Running times")
+    parser.add_argument("--seed", type=int, default=2025,
+                        help="Base random seed; run i uses seed + i")
+    parser.add_argument("--debug", action="store_true",
+                        help="Enable verbose FedOMG numerical diagnostics")
     parser.add_argument('-eg', "--eval_gap", type=int, default=1,
                         help="Rounds gap for evaluation")
     parser.add_argument('-dp', "--privacy", type=bool, default=False,
@@ -338,7 +360,12 @@ if __name__ == "__main__":
     if args.time_select:
         print("Time thresh hold: {}".format(args.time_threthold))
     print("Running times: {}".format(args.times))
+    print("Base random seed: {}".format(args.seed))
+    print("Debug diagnostics: {}".format(args.debug))
     print("Dataset: {}".format(args.dataset))
+    print("Non-IID: {}".format(args.noniid))
+    print("Balanced partition flag: {}".format(args.balance))
+    print("Dirichlet alpha: {}".format(args.alpha_dirich))
     print("Number of classes: {}".format(args.num_classes))
     print("Backbone: {}".format(args.model))
     print("Using device: {}".format(args.device))
