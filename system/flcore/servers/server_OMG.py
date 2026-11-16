@@ -136,10 +136,14 @@ class FedOMG(Server):
             self.Budget.append(round_time)
 
             if round_idx % self.eval_gap == 0 or round_idx == self.global_rounds:
+                # Evaluate the aggregated global model, not each client's
+                # preceding local model.
+                for client in self.clients:
+                    client.set_parameters(self.global_model)
+
                 print(f"\n-------------Round number: {round_idx}-------------")
                 print("\nEvaluate global model")
                 self.evaluate()
-
             print("-" * 25, "time cost", "-" * 25, round_time)
 
             if self.auto_break and self.check_done(
