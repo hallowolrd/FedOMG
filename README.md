@@ -30,7 +30,14 @@ python generate_cifar10.py noniid balance dir 100 0.5
 cd ..
 ```
 
-Run the 800-round, five-seed experiments from the repository root:
+Run the 800-round, five-seed experiments from the repository root.
+
+**Reproduction note:** Table 1's caption states 20% user participation, but the
+FedAvg and FedOMG CIFAR-10 α=0.1 values printed in Table 1 (60.89% and 90.40%)
+match exactly the 100%-participation rows in Appendix Table 5. The commands
+below use `-jr 1.0` to target the paper's reported numerical values. This
+follows the appendix's full-participation setting rather than the literal
+Table 1 caption.
 
 **CIFAR-10, Dirichlet α = 0.1 — FedAvg**
 
