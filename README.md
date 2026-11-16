@@ -32,10 +32,16 @@ cd ..
 
 Run the 800-round, five-seed experiments from the repository root:
 
-**CIFAR-10, Dirichlet α = 0.1**
+**CIFAR-10, Dirichlet α = 0.1 — FedAvg**
 
 ```bash
-python system/main.py -data Cifar10 -algo FedOMG -m cnn -mstr cnn -nb 10 -nc 100 -jr 1.0 -gr 800 -ls 5 -lr 0.005 -lbs 16 -t 5 -go cifar10_a01_jr1 -omgr 25 -omglr 25 -mmt 0.5 -ss 30 -gam 0.5 --omg_c 0.5 --omg_meta_lr 1.0 --noniid --balance --alpha_dirich 0.1 --seed 2025
+python system/main.py -data Cifar10 -algo FedAvg -m cnn -mstr cnn -nb 10 -nc 100 -jr 1.0 -gr 800 -ls 5 -lr 0.005 -lbs 16 -t 5 -go cifar10_a01_jr1_fedavg --noniid --balance --alpha_dirich 0.1 --seed 2025
+```
+
+**CIFAR-10, Dirichlet α = 0.1 — FedOMG**
+
+```bash
+python system/main.py -data Cifar10 -algo FedOMG -m cnn -mstr cnn -nb 10 -nc 100 -jr 1.0 -gr 800 -ls 5 -lr 0.005 -lbs 16 -t 5 -go cifar10_a01_jr1_fedomg -omgr 25 -omglr 25 -mmt 0.5 -ss 30 -gam 0.5 --omg_c 0.5 --omg_meta_lr 1.0 --noniid --balance --alpha_dirich 0.1 --seed 2025
 ```
 
 **CIFAR-10, Dirichlet α = 0.5**
