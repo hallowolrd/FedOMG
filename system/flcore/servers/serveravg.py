@@ -26,44 +26,68 @@ class FedAvg(Server):
 
 
     def train(self):
-        for i in range(self.global_rounds+1):
-            s_t = time.time()
+        if self.eval_gap <= 0:
+            raise ValueError(f"eval_gap must be positive, got {self.eval_gap}")
+
+        # Evaluate the initial global model before any local training.
+        for client in self.clients:
+            client.set_parameters(self.global_model)
+
+        print("\n-------------Round number: 0-------------")
+        print("\nEvaluate initial global model")
+        self.evaluate()
+
+        # Run exactly global_rounds local-training and aggregation rounds.
+        for round_idx in range(1, self.global_rounds + 1):
+            start_time = time.time()
+
             self.selected_clients = self.select_clients()
             self.send_models()
-
-            if i % self.eval_gap == 0:
-                print(f"\n-------------Round number: {i}-------------")
-                print("\nEvaluate global model")
-                self.evaluate()
-
 
             for client in self.selected_clients:
                 client.train()
 
             self.receive_models()
-            self.receive_grads()
-           
+
+            if not self.uploaded_models:
+                raise RuntimeError(
+                    f"No client model was uploaded at round {round_idx}. "
+                    "Check client_drop_rate, time_threthold, and client selection."
+                )
+
+            # Standard sample-count-weighted FedAvg aggregation.
             self.aggregate_parameters()
-            
 
-            self.Budget.append(time.time() - s_t)
-            print('-'*25, 'time cost', '-'*25, self.Budget[-1])
+            # Server.evaluate() evaluates client-held models. Synchronize all
+            # clients first so the metric is measured on the aggregated global
+            # model, not on their stale local models.
+            for client in self.clients:
+                client.set_parameters(self.global_model)
 
-            if self.auto_break and self.check_done(acc_lss=[self.rs_test_acc], top_cnt=self.top_cnt):
+            round_time = time.time() - start_time
+            self.Budget.append(round_time)
+
+            if round_idx % self.eval_gap == 0 or round_idx == self.global_rounds:
+                print(f"\n-------------Round number: {round_idx}-------------")
+                print("\nEvaluate global model")
+                self.evaluate()
+
+            print("-" * 25, "time cost", "-" * 25, round_time)
+
+            if self.auto_break and self.check_done(
+                acc_lss=[self.rs_test_acc],
+                top_cnt=self.top_cnt,
+            ):
+                print(f"Early stopping triggered at round {round_idx}.")
                 break
 
-        print("\nBest accuracy.")
+        if self.rs_test_acc:
+            print("\nBest accuracy.")
+            print(max(self.rs_test_acc))
 
-        print(max(self.rs_test_acc))
-        print("\nAverage time cost per round.")
-        print(sum(self.Budget[1:])/len(self.Budget[1:]))
+        if self.Budget:
+            print("\nAverage time cost per round.")
+            print(sum(self.Budget) / len(self.Budget))
 
         self.save_results()
         self.save_global_model()
-
-        # if self.num_new_clients > 0:
-        #     self.eval_new_clients = True
-        #     self.set_new_clients(clientAVG)
-        #     print(f"\n-------------Fine tuning round-------------")
-        #     print("\nEvaluate new clients")
-        #     self.domain_evaluate()
