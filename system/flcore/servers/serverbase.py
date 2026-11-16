@@ -457,6 +457,7 @@ class Server(object):
         
         if acc == None:
             self.rs_test_acc.append(test_acc)
+            self.rs_test_auc.append(test_auc)
         else:
             acc.append(test_acc)
         
