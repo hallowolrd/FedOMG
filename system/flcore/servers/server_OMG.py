@@ -66,9 +66,21 @@ class FedOMG(Server):
         self.omg_gamma = args.omg_gamma
         self.omg_meta_lr = args.omg_meta_lr
 
-        # The command-line flag is added in the experiment-configuration
-        # repair. Until then, diagnostics are disabled by default.
         self.debug = getattr(args, "debug", False)
+
+        if self.debug:
+            print(
+                "[DIAG] FedOMG runtime config: "
+                f"kappa={self.omg_c:.8g}, "
+                f"meta_lr={self.omg_meta_lr:.8g}, "
+                "optimizer=PyTorch SGD, "
+                f"optimizer_steps={self.omg_rounds}, "
+                f"optimizer_lr={self.omg_learning_rate:.8g}, "
+                f"momentum={self.omg_momentum:.8g}, "
+                f"step_size={self.omg_step_size}, "
+                f"scheduler_gamma={self.omg_gamma:.8g}",
+                flush=True,
+            )
 
         if self.omg_c < 0:
             raise ValueError(f"omg_c (kappa) must be non-negative, got {self.omg_c}")
@@ -245,6 +257,18 @@ class FedOMG(Server):
         # Normalize again to protect against small numerical drift.
         sample_weights = sample_weights / sample_weights.sum()
 
+        if self.debug:
+            print(
+                "[DIAG] uploaded sample weights: "
+                f"sum={sample_weights.sum().item():.8f}, "
+                f"min={sample_weights.min().item():.8e}, "
+                f"max={sample_weights.max().item():.8e}, "
+                f"std={sample_weights.std(unbiased=False).item():.8e}",
+                flush=True,
+            )
+            for client_id, client_delta in zip(self.uploaded_ids, client_deltas):
+                tensor_diagnostics(f"Client {client_id} parameter delta", client_delta)
+
         g_fl = gradient_matrix @ sample_weights
 
         g_igd, gamma, objective = self.omg_low(
@@ -258,17 +282,42 @@ class FedOMG(Server):
         if self.debug:
             tensor_diagnostics("FedAvg reference update g_FL", g_fl)
             tensor_diagnostics("FedOMG invariant update g_IGD", g_igd)
+
+            update_difference = g_igd - g_fl
+            relative_l2_difference = update_difference.norm() / (
+                g_fl.norm() + 1e-12
+            )
+            cosine_similarity = torch.dot(g_igd, g_fl) / (
+                g_igd.norm() * g_fl.norm() + 1e-12
+            )
             print(
-                "[DIAG] gamma: "
-                f"sum={gamma.sum().item():.8f}, "
-                f"min={gamma.min().item():.8e}, "
-                f"max={gamma.max().item():.8e}, "
-                f"objective={objective:.8e}",
+                "[DIAG] FedOMG vs FedAvg update: "
+                f"kappa={self.omg_c:.8g}, "
+                f"max_abs_diff={update_difference.abs().max().item():.10e}, "
+                f"relative_l2_diff={relative_l2_difference.item():.10e}, "
+                f"cosine_similarity={cosine_similarity.item():.10e}, "
+                f"norm_ratio={g_igd.norm().item() / (g_fl.norm().item() + 1e-12):.10e}",
+                flush=True,
+            )
+
+            gamma_sum = gamma.sum().item()
+            gamma_min = gamma.min().item()
+            gamma_max = gamma.max().item()
+            gamma_simplex_ok = (
+                gamma_min >= -1e-8 and abs(gamma_sum - 1.0) <= 1e-5
+            )
+            gamma_weight_difference = gamma - sample_weights
+            print(
+                "[DIAG] gamma constraints/reference: "
+                f"sum={gamma_sum:.10e}, min={gamma_min:.10e}, "
+                f"max={gamma_max:.10e}, simplex_ok={gamma_simplex_ok}, "
+                f"||gamma-sample_weights||_2={gamma_weight_difference.norm().item():.10e}, "
+                f"max_abs_gamma_weight_diff={gamma_weight_difference.abs().max().item():.10e}",
                 flush=True,
             )
             print(
-                "[DIAG] update norm ratio ||g_IGD||/||g_FL||: "
-                f"{g_igd.norm().item() / (g_fl.norm().item() + 1e-12):.8e}",
+                "[DIAG] gamma values: "
+                f"{gamma.detach().cpu().tolist()}",
                 flush=True,
             )
             print(f"[DIAG] server meta learning rate: {lr_meta}", flush=True)
@@ -276,50 +325,6 @@ class FedOMG(Server):
         flat_global_parameters = torch.cat(
             [parameter.detach().reshape(-1) for _, parameter in global_named_parameters]
         )
-
-        if self.debug and float(self.omg_c) == 0.0:
-            # Reproduce Server.aggregate_parameters() exactly as the FedAvg
-            # reference: deepcopy the first uploaded model, zero its
-            # parameters, then add each weighted client model in upload order.
-            fedavg_reference_model = copy.deepcopy(inner_weights[0])
-            for parameter in fedavg_reference_model.parameters():
-                parameter.data.zero_()
-
-            for weight, client_model in zip(self.uploaded_weights, inner_weights):
-                for server_parameter, client_parameter in zip(
-                    fedavg_reference_model.parameters(),
-                    client_model.parameters(),
-                ):
-                    server_parameter.data += client_parameter.data.clone() * weight
-
-            fedavg_flat_parameters = torch.cat(
-                [
-                    parameter.detach().reshape(-1)
-                    for parameter in fedavg_reference_model.parameters()
-                ]
-            )
-            fedOMG_flat_parameters = (
-                flat_global_parameters + float(lr_meta) * g_igd
-            )
-            aggregation_diff = fedOMG_flat_parameters - fedavg_flat_parameters
-            relative_l2_diff = aggregation_diff.norm() / (
-                fedavg_flat_parameters.norm() + 1e-12
-            )
-            is_close = torch.allclose(
-                fedOMG_flat_parameters,
-                fedavg_flat_parameters,
-                rtol=1e-5,
-                atol=1e-6,
-            )
-
-            print(
-                "[DIAG] Same-round FedAvg vs FedOMG aggregation: "
-                f"max_abs_diff={aggregation_diff.abs().max().item():.10e}, "
-                f"relative_l2_diff={relative_l2_diff.item():.10e}, "
-                f"allclose={is_close}, "
-                f"meta_lr={float(lr_meta):.8g}",
-                flush=True,
-            )
 
         # g_u is a parameter delta (local - global), i.e. the direction
         # that FedAvg adds to the global parameters. Therefore we ADD the
@@ -338,6 +343,65 @@ class FedOMG(Server):
             vector_to_parameters(
                 updated_flat_parameters,
                 meta_weights.parameters(),
+            )
+
+        if self.debug:
+            applied_flat_parameters = torch.cat(
+                [
+                    parameter.detach().reshape(-1)
+                    for parameter in meta_weights.parameters()
+                ]
+            )
+            intended_update = float(lr_meta) * g_igd
+            actual_update = applied_flat_parameters - flat_global_parameters
+            application_error = actual_update - intended_update
+            print(
+                "[DIAG] applied global update: "
+                f"actual_norm={actual_update.norm().item():.10e}, "
+                f"intended_norm={intended_update.norm().item():.10e}, "
+                f"max_abs_application_error={application_error.abs().max().item():.10e}, "
+                f"allclose={torch.allclose(actual_update, intended_update, rtol=1e-5, atol=1e-6)}",
+                flush=True,
+            )
+
+            # Match Server.aggregate_parameters(): start from the first
+            # uploaded model, zero its parameters, and add weighted models
+            # in upload order. This is a parameter-only comparison.
+            fedavg_reference_model = copy.deepcopy(inner_weights[0])
+            for parameter in fedavg_reference_model.parameters():
+                parameter.data.zero_()
+
+            for weight, client_model in zip(self.uploaded_weights, inner_weights):
+                for server_parameter, client_parameter in zip(
+                    fedavg_reference_model.parameters(),
+                    client_model.parameters(),
+                ):
+                    server_parameter.data += client_parameter.data.clone() * weight
+
+            fedavg_flat_parameters = torch.cat(
+                [
+                    parameter.detach().reshape(-1)
+                    for parameter in fedavg_reference_model.parameters()
+                ]
+            )
+            aggregation_diff = applied_flat_parameters - fedavg_flat_parameters
+            relative_l2_diff = aggregation_diff.norm() / (
+                fedavg_flat_parameters.norm() + 1e-12
+            )
+            is_close = torch.allclose(
+                applied_flat_parameters,
+                fedavg_flat_parameters,
+                rtol=1e-5,
+                atol=1e-6,
+            )
+            print(
+                "[DIAG] Same-round FedAvg vs FedOMG aggregation: "
+                f"kappa={self.omg_c:.8g}, "
+                f"max_abs_diff={aggregation_diff.abs().max().item():.10e}, "
+                f"relative_l2_diff={relative_l2_diff.item():.10e}, "
+                f"allclose={is_close}, "
+                f"meta_lr={float(lr_meta):.8g}",
+                flush=True,
             )
 
         return ParamDict(meta_weights.state_dict())
@@ -386,7 +450,22 @@ class FedOMG(Server):
 
         # Corollary 1: when kappa -> 0, FedOMG reduces to the reference FL
         # update. This also avoids an unnecessary optimization pass.
-        if kappa == 0.0 or g_fl_norm.item() <= eps:
+        if kappa == 0.0:
+            if self.debug:
+                print(
+                    "[DIAG] OMG optimizer skipped: kappa=0; "
+                    "gamma is a uniform placeholder and objective was not evaluated.",
+                    flush=True,
+                )
+            return g_fl, uniform_gamma, 0.0
+
+        if g_fl_norm.item() <= eps:
+            if self.debug:
+                print(
+                    "[DIAG] OMG optimizer skipped: reference update norm "
+                    f"({g_fl_norm.item():.10e}) <= eps ({eps:.1e}).",
+                    flush=True,
+                )
             return g_fl, uniform_gamma, 0.0
 
         # Form the K x K Gram matrix. This avoids repeatedly operating on
@@ -427,6 +506,9 @@ class FedOMG(Server):
 
         best_gamma = uniform_gamma.detach().clone()
         best_objective = float("inf")
+        initial_objective = None
+        last_objective = None
+        optimizer_steps = 0
 
         for step in range(self.omg_rounds + 1):
             optimizer.zero_grad()
@@ -454,6 +536,10 @@ class FedOMG(Server):
                 )
 
             objective_value = float(objective.detach().item())
+            if initial_objective is None:
+                initial_objective = objective_value
+            last_objective = objective_value
+
             if objective_value < best_objective:
                 best_objective = objective_value
                 best_gamma = gamma.detach().clone()
@@ -462,6 +548,33 @@ class FedOMG(Server):
                 objective.backward()
                 optimizer.step()
                 scheduler.step()
+                optimizer_steps += 1
+
+        if self.debug:
+            gamma_sum = best_gamma.sum().item()
+            gamma_min = best_gamma.min().item()
+            gamma_max = best_gamma.max().item()
+            gamma_simplex_ok = (
+                gamma_min >= -1e-8 and abs(gamma_sum - 1.0) <= 1e-5
+            )
+            print(
+                "[DIAG] OMG optimizer: "
+                "name=PyTorch SGD, status=completed, "
+                f"steps={optimizer_steps}/{self.omg_rounds}, "
+                f"initial_objective={initial_objective:.10e}, "
+                f"last_objective={last_objective:.10e}, "
+                f"best_objective={best_objective:.10e}, "
+                f"best_gamma_sum={gamma_sum:.10e}, "
+                f"best_gamma_min={gamma_min:.10e}, "
+                f"best_gamma_max={gamma_max:.10e}, "
+                f"simplex_ok={gamma_simplex_ok}",
+                flush=True,
+            )
+            print(
+                "[DIAG] optimized gamma values: "
+                f"{best_gamma.detach().cpu().tolist()}",
+                flush=True,
+            )
 
         mixed_update = gradient_matrix @ best_gamma
         mixed_update_norm = torch.linalg.vector_norm(mixed_update)
@@ -469,6 +582,13 @@ class FedOMG(Server):
         if mixed_update_norm.item() <= eps:
             # Eq. (16) is undefined if ||Gamma* G|| is zero. In this
             # degenerate case, fall back to the well-defined FedAvg update.
+            if self.debug:
+                print(
+                    "[DIAG] Eq. (16) fallback: mixed update norm "
+                    f"({mixed_update_norm.item():.10e}) <= eps ({eps:.1e}); "
+                    "using g_FL.",
+                    flush=True,
+                )
             g_igd = g_fl
         else:
             # Eq. (16). Do NOT divide by (1 + kappa**2): that factor is not
