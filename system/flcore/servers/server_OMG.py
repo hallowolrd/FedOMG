@@ -277,6 +277,50 @@ class FedOMG(Server):
             [parameter.detach().reshape(-1) for _, parameter in global_named_parameters]
         )
 
+        if self.debug and float(self.omg_c) == 0.0:
+            # Reproduce Server.aggregate_parameters() exactly as the FedAvg
+            # reference: deepcopy the first uploaded model, zero its
+            # parameters, then add each weighted client model in upload order.
+            fedavg_reference_model = copy.deepcopy(inner_weights[0])
+            for parameter in fedavg_reference_model.parameters():
+                parameter.data.zero_()
+
+            for weight, client_model in zip(self.uploaded_weights, inner_weights):
+                for server_parameter, client_parameter in zip(
+                    fedavg_reference_model.parameters(),
+                    client_model.parameters(),
+                ):
+                    server_parameter.data += client_parameter.data.clone() * weight
+
+            fedavg_flat_parameters = torch.cat(
+                [
+                    parameter.detach().reshape(-1)
+                    for parameter in fedavg_reference_model.parameters()
+                ]
+            )
+            fedOMG_flat_parameters = (
+                flat_global_parameters + float(lr_meta) * g_igd
+            )
+            aggregation_diff = fedOMG_flat_parameters - fedavg_flat_parameters
+            relative_l2_diff = aggregation_diff.norm() / (
+                fedavg_flat_parameters.norm() + 1e-12
+            )
+            is_close = torch.allclose(
+                fedOMG_flat_parameters,
+                fedavg_flat_parameters,
+                rtol=1e-5,
+                atol=1e-6,
+            )
+
+            print(
+                "[DIAG] Same-round FedAvg vs FedOMG aggregation: "
+                f"max_abs_diff={aggregation_diff.abs().max().item():.10e}, "
+                f"relative_l2_diff={relative_l2_diff.item():.10e}, "
+                f"allclose={is_close}, "
+                f"meta_lr={float(lr_meta):.8g}",
+                flush=True,
+            )
+
         # g_u is a parameter delta (local - global), i.e. the direction
         # that FedAvg adds to the global parameters. Therefore we ADD the
         # FedOMG delta here, matching the official implementation's update
