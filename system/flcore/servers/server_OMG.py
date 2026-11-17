@@ -142,7 +142,30 @@ class FedOMG(Server):
                 inner_weights=self.uploaded_models,
                 lr_meta=self.omg_meta_lr,
             )
+            if self.debug:
+                pre_reload_parameters = torch.cat(
+                    [
+                        parameter.detach().reshape(-1)
+                        for parameter in self.global_model.parameters()
+                    ]
+                ).clone()
+
             self.global_model.load_state_dict(copy.deepcopy(updated_state))
+
+            if self.debug:
+                post_reload_parameters = torch.cat(
+                    [
+                        parameter.detach().reshape(-1)
+                        for parameter in self.global_model.parameters()
+                    ]
+                )
+                reload_difference = post_reload_parameters - pre_reload_parameters
+                print(
+                    "[DIAG] global model after load_state_dict: "
+                    f"max_abs_reload_diff={reload_difference.abs().max().item():.10e}, "
+                    f"allclose={torch.allclose(post_reload_parameters, pre_reload_parameters, rtol=1e-5, atol=1e-6)}",
+                    flush=True,
+                )
 
             round_time = time.time() - start_time
             self.Budget.append(round_time)
@@ -570,12 +593,6 @@ class FedOMG(Server):
                 f"simplex_ok={gamma_simplex_ok}",
                 flush=True,
             )
-            print(
-                "[DIAG] optimized gamma values: "
-                f"{best_gamma.detach().cpu().tolist()}",
-                flush=True,
-            )
-
         mixed_update = gradient_matrix @ best_gamma
         mixed_update_norm = torch.linalg.vector_norm(mixed_update)
 
