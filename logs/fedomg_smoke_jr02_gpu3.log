@@ -1,0 +1,171 @@
+==================================================
+Algorithm: FedOMG
+Local batch size: 16
+Local steps: 5
+Local learning rate: 0.005
+Local learning rate decay: False
+Total number of clients: 100
+Clients join in each round: 0.2
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Base random seed: 9001
+Debug diagnostics: True
+Dataset: Cifar10
+Non-IID: True
+Balanced partition flag: True
+Dirichlet alpha: 0.1
+Number of classes: 10
+Backbone: cnn
+Using device: cuda:0
+Using DP: False
+Auto break: False
+Global rounds: 2
+CUDA device index: 0
+CUDA device name: NVIDIA L40
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 1
+==================================================
+
+============= Running time: 0th =============
+Random seed: 9001
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=1600, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 0.2 / 100
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate initial global model
+Averaged Train Loss: 2.3034
+Averaged Test Accurancy: 0.0987
+Averaged Test AUC: 0.5056
+Std Test Accurancy: 0.2107
+Std Test AUC: 0.2385
+
+========== DIAG: CLIENT MODELS ==========
+Uploaded client IDs: [56, 6, 50, 18, 20, 40, 12, 63, 70, 48, 69, 94, 59, 78, 35, 60, 5, 72, 0, 25]
+Uploaded clients: 20
+[DIAG] Global model before OMG: shape=(878538,), norm=1.436685e+01, mean=7.794853e-06, max_abs=1.154273e-01, finite=878538/878538
+[DIAG] Client 56 model: shape=(878538,), norm=1.441614e+01, mean=2.107140e-04, max_abs=1.879399e-01, finite=878538/878538
+[DIAG] Client 6 model: shape=(878538,), norm=1.442629e+01, mean=2.289777e-04, max_abs=1.336508e-01, finite=878538/878538
+[DIAG] Client 50 model: shape=(878538,), norm=1.440512e+01, mean=1.735168e-04, max_abs=1.437197e-01, finite=878538/878538
+[DIAG] Client 18 model: shape=(878538,), norm=1.436885e+01, mean=1.859811e-05, max_abs=1.159834e-01, finite=878538/878538
+[DIAG] Client 20 model: shape=(878538,), norm=1.439959e+01, mean=1.394967e-04, max_abs=1.232445e-01, finite=878538/878538
+[DIAG] Client 40 model: shape=(878538,), norm=1.439195e+01, mean=1.357119e-04, max_abs=1.281109e-01, finite=878538/878538
+[DIAG] Client 12 model: shape=(878538,), norm=1.441683e+01, mean=1.949262e-04, max_abs=2.041042e-01, finite=878538/878538
+[DIAG] Client 63 model: shape=(878538,), norm=1.438922e+01, mean=1.130510e-04, max_abs=1.240023e-01, finite=878538/878538
+[DIAG] Client 70 model: shape=(878538,), norm=1.442004e+01, mean=2.201657e-04, max_abs=1.315094e-01, finite=878538/878538
+[DIAG] Client 48 model: shape=(878538,), norm=1.440949e+01, mean=1.628110e-04, max_abs=1.346606e-01, finite=878538/878538
+[DIAG] Client 69 model: shape=(878538,), norm=1.439765e+01, mean=1.460895e-04, max_abs=1.565372e-01, finite=878538/878538
+[DIAG] Client 94 model: shape=(878538,), norm=1.439595e+01, mean=1.348768e-04, max_abs=1.323079e-01, finite=878538/878538
+[DIAG] Client 59 model: shape=(878538,), norm=1.442836e+01, mean=2.037461e-04, max_abs=1.731098e-01, finite=878538/878538
+[DIAG] Client 78 model: shape=(878538,), norm=1.439427e+01, mean=1.314184e-04, max_abs=1.361506e-01, finite=878538/878538
+[DIAG] Client 35 model: shape=(878538,), norm=1.441552e+01, mean=2.008730e-04, max_abs=1.336508e-01, finite=878538/878538
+[DIAG] Client 60 model: shape=(878538,), norm=1.436718e+01, mean=9.119337e-06, max_abs=1.153846e-01, finite=878538/878538
+[DIAG] Client 5 model: shape=(878538,), norm=1.439880e+01, mean=1.441815e-04, max_abs=1.321911e-01, finite=878538/878538
+[DIAG] Client 72 model: shape=(878538,), norm=1.440530e+01, mean=1.817121e-04, max_abs=1.316260e-01, finite=878538/878538
+[DIAG] Client 0 model: shape=(878538,), norm=1.441608e+01, mean=1.956017e-04, max_abs=1.322541e-01, finite=878538/878538
+[DIAG] Client 25 model: shape=(878538,), norm=1.441109e+01, mean=1.905832e-04, max_abs=1.461949e-01, finite=878538/878538
+========== END CLIENT MODELS ==========
+[DIAG] FedAvg reference update g_FL: shape=(878538,), norm=4.957464e-01, mean=1.750336e-04, max_abs=4.460499e-02, finite=878538/878538
+[DIAG] FedOMG invariant update g_IGD: shape=(878538,), norm=5.434874e-01, mean=1.798803e-04, max_abs=5.416584e-02, finite=878538/878538
+[DIAG] gamma: sum=0.99999994, min=5.21126231e-06, max=9.92194891e-01, objective=3.22433077e-02
+[DIAG] update norm ratio ||g_IGD||/||g_FL||: 1.09630118e+00
+[DIAG] server meta learning rate: 1.0
+
+-------------Round number: 1-------------
+
+Evaluate global model
+Averaged Train Loss: 2.4227
+Averaged Test Accurancy: 0.1001
+Averaged Test AUC: 0.5156
+Std Test Accurancy: 0.1951
+Std Test AUC: 0.2496
+------------------------- time cost ------------------------- 10.407867670059204
+
+========== DIAG: CLIENT MODELS ==========
+Uploaded client IDs: [14, 79, 70, 87, 3, 69, 56, 46, 88, 98, 33, 41, 54, 94, 16, 81, 2, 27, 6, 38]
+Uploaded clients: 20
+[DIAG] Global model before OMG: shape=(878538,), norm=1.440041e+01, mean=1.876751e-04, max_abs=1.326767e-01, finite=878538/878538
+[DIAG] Client 14 model: shape=(878538,), norm=1.443257e+01, mean=2.722350e-04, max_abs=1.466448e-01, finite=878538/878538
+[DIAG] Client 79 model: shape=(878538,), norm=1.440728e+01, mean=2.094592e-04, max_abs=1.351464e-01, finite=878538/878538
+[DIAG] Client 70 model: shape=(878538,), norm=1.443477e+01, mean=2.779861e-04, max_abs=1.427445e-01, finite=878538/878538
+[DIAG] Client 87 model: shape=(878538,), norm=1.442726e+01, mean=2.684358e-04, max_abs=1.473341e-01, finite=878538/878538
+[DIAG] Client 3 model: shape=(878538,), norm=1.443265e+01, mean=2.922801e-04, max_abs=1.519549e-01, finite=878538/878538
+[DIAG] Client 69 model: shape=(878538,), norm=1.442391e+01, mean=2.671300e-04, max_abs=1.440775e-01, finite=878538/878538
+[DIAG] Client 56 model: shape=(878538,), norm=1.443140e+01, mean=2.889005e-04, max_abs=1.513648e-01, finite=878538/878538
+[DIAG] Client 46 model: shape=(878538,), norm=1.442594e+01, mean=2.862794e-04, max_abs=1.432437e-01, finite=878538/878538
+[DIAG] Client 88 model: shape=(878538,), norm=1.441996e+01, mean=2.523730e-04, max_abs=1.472725e-01, finite=878538/878538
+[DIAG] Client 98 model: shape=(878538,), norm=1.441701e+01, mean=2.413777e-04, max_abs=1.430418e-01, finite=878538/878538
+[DIAG] Client 33 model: shape=(878538,), norm=1.441926e+01, mean=2.491229e-04, max_abs=1.433131e-01, finite=878538/878538
+[DIAG] Client 41 model: shape=(878538,), norm=1.442592e+01, mean=2.634292e-04, max_abs=1.529080e-01, finite=878538/878538
+[DIAG] Client 54 model: shape=(878538,), norm=1.442428e+01, mean=2.413490e-04, max_abs=1.414895e-01, finite=878538/878538
+[DIAG] Client 94 model: shape=(878538,), norm=1.441728e+01, mean=2.378302e-04, max_abs=1.460416e-01, finite=878538/878538
+[DIAG] Client 16 model: shape=(878538,), norm=1.443409e+01, mean=2.816981e-04, max_abs=1.477056e-01, finite=878538/878538
+[DIAG] Client 81 model: shape=(878538,), norm=1.442668e+01, mean=2.558065e-04, max_abs=1.376692e-01, finite=878538/878538
+[DIAG] Client 2 model: shape=(878538,), norm=1.442509e+01, mean=2.555455e-04, max_abs=1.490580e-01, finite=878538/878538
+[DIAG] Client 27 model: shape=(878538,), norm=1.442227e+01, mean=2.479565e-04, max_abs=1.463773e-01, finite=878538/878538
+[DIAG] Client 6 model: shape=(878538,), norm=1.443979e+01, mean=2.804654e-04, max_abs=1.516643e-01, finite=878538/878538
+[DIAG] Client 38 model: shape=(878538,), norm=1.441067e+01, mean=2.267148e-04, max_abs=1.390758e-01, finite=878538/878538
+========== END CLIENT MODELS ==========
+[DIAG] FedAvg reference update g_FL: shape=(878538,), norm=2.440733e-01, mean=8.005668e-05, max_abs=2.034134e-02, finite=878538/878538
+[DIAG] FedOMG invariant update g_IGD: shape=(878538,), norm=3.322785e-01, mean=1.090780e-04, max_abs=2.879746e-02, finite=878538/878538
+[DIAG] gamma: sum=1.00000000, min=1.07283215e-03, max=2.88432091e-01, objective=1.91079468e-01
+[DIAG] update norm ratio ||g_IGD||/||g_FL||: 1.36138836e+00
+[DIAG] server meta learning rate: 1.0
+
+-------------Round number: 2-------------
+
+Evaluate global model
+Averaged Train Loss: 2.3201
+Averaged Test Accurancy: 0.1565
+Averaged Test AUC: 0.5497
+Std Test Accurancy: 0.2403
+Std Test AUC: 0.2284
+------------------------- time cost ------------------------- 8.483269691467285
+
+Best accuracy.
+0.15646620542841938
+
+Average time cost per round.
+9.445568680763245
+Results saved to: /home/cjq/Project/FedOMG/results/Cifar10_FedOMG_smoke_cifar10_a01_fedomg_jr02_gpu3_0.h5
+Global model saved to: /home/cjq/Project/FedOMG/models/Cifar10/FedOMG_server_seed_9001.pt
+
+Average time cost: 52.07s.
+Loaded Cifar10_FedOMG_smoke_cifar10_a01_fedomg_jr02_gpu3_0: 3 evaluation points
+Best accuracy across runs: 15.65% ± 0.00%
+Final accuracy across runs: 15.65% ± 0.00%
+All done!
+
+Storage on meta
+-------------------------------------------------------------------------------
+Total Tensors: 20 	Used Memory: 0.00B
+-------------------------------------------------------------------------------
+
+Storage on cuda:0
+-------------------------------------------------------------------------------
+Total Tensors: 239840874 	Used Memory: 797.90M
+The allocated memory on cuda:0: 816.03M
+Memory differs due to the matrix alignment or invisible gradient buffer tensors
+-------------------------------------------------------------------------------

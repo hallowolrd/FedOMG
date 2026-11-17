@@ -1,0 +1,109 @@
+==================================================
+Algorithm: FedAvg
+Local batch size: 16
+Local steps: 5
+Local learning rate: 0.005
+Local learning rate decay: False
+Total number of clients: 100
+Clients join in each round: 0.2
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Base random seed: 9001
+Debug diagnostics: True
+Dataset: Cifar10
+Non-IID: True
+Balanced partition flag: True
+Dirichlet alpha: 0.1
+Number of classes: 10
+Backbone: cnn
+Using device: cuda:0
+Using DP: False
+Auto break: False
+Global rounds: 2
+CUDA device index: 0
+CUDA device name: NVIDIA L40
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 1
+==================================================
+
+============= Running time: 0th =============
+Random seed: 9001
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=1600, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 0.2 / 100
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate initial global model
+Averaged Train Loss: 2.3034
+Averaged Test Accurancy: 0.0987
+Averaged Test AUC: 0.5056
+Std Test Accurancy: 0.2107
+Std Test AUC: 0.2385
+
+-------------Round number: 1-------------
+
+Evaluate global model
+Averaged Train Loss: 2.4297
+Averaged Test Accurancy: 0.1032
+Averaged Test AUC: 0.5125
+Std Test Accurancy: 0.2220
+Std Test AUC: 0.2414
+------------------------- time cost ------------------------- 10.580125331878662
+
+-------------Round number: 2-------------
+
+Evaluate global model
+Averaged Train Loss: 2.5436
+Averaged Test Accurancy: 0.1032
+Averaged Test AUC: 0.5258
+Std Test Accurancy: 0.2220
+Std Test AUC: 0.2379
+------------------------- time cost ------------------------- 7.73928689956665
+
+Best accuracy.
+0.10317988291644492
+
+Average time cost per round.
+9.159706115722656
+Results saved to: /home/cjq/Project/FedOMG/results/Cifar10_FedAvg_smoke_cifar10_a01_fedavg_jr02_gpu3_0.h5
+Global model saved to: /home/cjq/Project/FedOMG/models/Cifar10/FedAvg_server_seed_9001.pt
+
+Average time cost: 51.77s.
+Loaded Cifar10_FedAvg_smoke_cifar10_a01_fedavg_jr02_gpu3_0: 3 evaluation points
+Best accuracy across runs: 10.32% ± 0.00%
+Final accuracy across runs: 10.32% ± 0.00%
+All done!
+
+Storage on meta
+-------------------------------------------------------------------------------
+Total Tensors: 20 	Used Memory: 0.00B
+-------------------------------------------------------------------------------
+
+Storage on cuda:0
+-------------------------------------------------------------------------------
+Total Tensors: 239840874 	Used Memory: 797.90M
+The allocated memory on cuda:0: 814.78M
+Memory differs due to the matrix alignment or invisible gradient buffer tensors
+-------------------------------------------------------------------------------

@@ -1,0 +1,331 @@
+==================================================
+Algorithm: FedOMG
+Local batch size: 16
+Local steps: 5
+Local learning rate: 0.005
+Local learning rate decay: False
+Total number of clients: 100
+Clients join in each round: 1.0
+Clients randomly join: False
+Client drop rate: 0.0
+Client select regarding time: False
+Running times: 1
+Base random seed: 9001
+Debug diagnostics: True
+Dataset: Cifar10
+Non-IID: True
+Balanced partition flag: True
+Dirichlet alpha: 0.1
+Number of classes: 10
+Backbone: cnn
+Using device: cuda:0
+Using DP: False
+Auto break: False
+Global rounds: 2
+CUDA device index: 0
+CUDA device name: NVIDIA L40
+DLG attack: False
+Total number of new clients: 0
+Fine tuning epoches on new clients: 1
+==================================================
+
+============= Running time: 0th =============
+Random seed: 9001
+Creating server and clients ...
+FedAvgCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(32, 64, kernel_size=(5, 5), stride=(1, 1))
+    (1): ReLU(inplace=True)
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=1600, out_features=512, bias=True)
+    (1): ReLU(inplace=True)
+  )
+  (fc): Linear(in_features=512, out_features=10, bias=True)
+)
+
+Join ratio / total clients: 1.0 / 100
+Finished creating server and clients.
+
+-------------Round number: 0-------------
+
+Evaluate initial global model
+Averaged Train Loss: 2.3034
+Averaged Test Accurancy: 0.0987
+Averaged Test AUC: 0.5056
+Std Test Accurancy: 0.2107
+Std Test AUC: 0.2385
+
+========== DIAG: CLIENT MODELS ==========
+Uploaded client IDs: [69, 58, 42, 50, 74, 30, 39, 55, 8, 72, 80, 36, 4, 2, 49, 90, 26, 1, 81, 85, 6, 65, 19, 77, 17, 95, 3, 91, 51, 78, 96, 54, 32, 33, 22, 93, 29, 0, 88, 73, 60, 46, 9, 79, 62, 48, 52, 12, 99, 15, 27, 87, 92, 28, 20, 18, 38, 45, 44, 23, 31, 70, 53, 7, 40, 76, 84, 75, 86, 10, 34, 21, 56, 43, 97, 13, 11, 63, 25, 61, 37, 16, 82, 98, 47, 68, 5, 35, 59, 94, 67, 14, 57, 66, 24, 83, 41, 89, 64, 71]
+Uploaded clients: 100
+[DIAG] Global model before OMG: shape=(878538,), norm=1.436685e+01, mean=7.794853e-06, max_abs=1.154273e-01, finite=878538/878538
+[DIAG] Client 69 model: shape=(878538,), norm=1.439765e+01, mean=1.460895e-04, max_abs=1.565372e-01, finite=878538/878538
+[DIAG] Client 58 model: shape=(878538,), norm=1.436682e+01, mean=7.536753e-06, max_abs=1.154806e-01, finite=878538/878538
+[DIAG] Client 42 model: shape=(878538,), norm=1.438990e+01, mean=1.364761e-04, max_abs=1.226176e-01, finite=878538/878538
+[DIAG] Client 50 model: shape=(878538,), norm=1.440512e+01, mean=1.735168e-04, max_abs=1.437197e-01, finite=878538/878538
+[DIAG] Client 74 model: shape=(878538,), norm=1.437795e+01, mean=7.752132e-05, max_abs=1.198713e-01, finite=878538/878538
+[DIAG] Client 30 model: shape=(878538,), norm=1.439521e+01, mean=1.449554e-04, max_abs=1.275377e-01, finite=878538/878538
+[DIAG] Client 39 model: shape=(878538,), norm=1.442274e+01, mean=2.077604e-04, max_abs=2.104364e-01, finite=878538/878538
+[DIAG] Client 55 model: shape=(878538,), norm=1.441660e+01, mean=1.984397e-04, max_abs=1.277015e-01, finite=878538/878538
+[DIAG] Client 8 model: shape=(878538,), norm=1.440107e+01, mean=1.653347e-04, max_abs=1.748595e-01, finite=878538/878538
+[DIAG] Client 72 model: shape=(878538,), norm=1.440530e+01, mean=1.817121e-04, max_abs=1.316260e-01, finite=878538/878538
+[DIAG] Client 80 model: shape=(878538,), norm=1.438145e+01, mean=8.792206e-05, max_abs=1.225261e-01, finite=878538/878538
+[DIAG] Client 36 model: shape=(878538,), norm=1.440440e+01, mean=1.764934e-04, max_abs=1.328107e-01, finite=878538/878538
+[DIAG] Client 4 model: shape=(878538,), norm=1.438392e+01, mean=9.860199e-05, max_abs=1.205281e-01, finite=878538/878538
+[DIAG] Client 2 model: shape=(878538,), norm=1.440082e+01, mean=1.612831e-04, max_abs=1.302850e-01, finite=878538/878538
+[DIAG] Client 49 model: shape=(878538,), norm=1.436822e+01, mean=1.498678e-05, max_abs=1.154513e-01, finite=878538/878538
+[DIAG] Client 90 model: shape=(878538,), norm=1.436836e+01, mean=1.658468e-05, max_abs=1.156376e-01, finite=878538/878538
+[DIAG] Client 26 model: shape=(878538,), norm=1.441814e+01, mean=2.012460e-04, max_abs=1.705409e-01, finite=878538/878538
+[DIAG] Client 1 model: shape=(878538,), norm=1.439177e+01, mean=1.143113e-04, max_abs=1.307206e-01, finite=878538/878538
+[DIAG] Client 81 model: shape=(878538,), norm=1.440489e+01, mean=1.628117e-04, max_abs=1.242419e-01, finite=878538/878538
+[DIAG] Client 85 model: shape=(878538,), norm=1.441480e+01, mean=1.966695e-04, max_abs=1.367791e-01, finite=878538/878538
+[DIAG] Client 6 model: shape=(878538,), norm=1.442629e+01, mean=2.289777e-04, max_abs=1.336508e-01, finite=878538/878538
+[DIAG] Client 65 model: shape=(878538,), norm=1.440886e+01, mean=1.762698e-04, max_abs=1.332146e-01, finite=878538/878538
+[DIAG] Client 19 model: shape=(878538,), norm=1.440995e+01, mean=1.937679e-04, max_abs=1.365958e-01, finite=878538/878538
+[DIAG] Client 77 model: shape=(878538,), norm=1.440111e+01, mean=1.622639e-04, max_abs=1.659035e-01, finite=878538/878538
+[DIAG] Client 17 model: shape=(878538,), norm=1.441829e+01, mean=1.905147e-04, max_abs=1.574801e-01, finite=878538/878538
+[DIAG] Client 95 model: shape=(878538,), norm=1.441106e+01, mean=2.165836e-04, max_abs=1.293158e-01, finite=878538/878538
+[DIAG] Client 3 model: shape=(878538,), norm=1.441755e+01, mean=2.140924e-04, max_abs=1.918001e-01, finite=878538/878538
+[DIAG] Client 91 model: shape=(878538,), norm=1.439372e+01, mean=1.220228e-04, max_abs=1.309434e-01, finite=878538/878538
+[DIAG] Client 51 model: shape=(878538,), norm=1.437875e+01, mean=8.312505e-05, max_abs=1.195631e-01, finite=878538/878538
+[DIAG] Client 78 model: shape=(878538,), norm=1.439427e+01, mean=1.314184e-04, max_abs=1.361506e-01, finite=878538/878538
+[DIAG] Client 96 model: shape=(878538,), norm=1.440743e+01, mean=1.826167e-04, max_abs=1.285287e-01, finite=878538/878538
+[DIAG] Client 54 model: shape=(878538,), norm=1.439653e+01, mean=1.329061e-04, max_abs=1.270453e-01, finite=878538/878538
+[DIAG] Client 32 model: shape=(878538,), norm=1.440712e+01, mean=1.615935e-04, max_abs=1.376233e-01, finite=878538/878538
+[DIAG] Client 33 model: shape=(878538,), norm=1.440116e+01, mean=1.634051e-04, max_abs=1.291559e-01, finite=878538/878538
+[DIAG] Client 22 model: shape=(878538,), norm=1.443288e+01, mean=2.142999e-04, max_abs=1.510792e-01, finite=878538/878538
+[DIAG] Client 93 model: shape=(878538,), norm=1.438987e+01, mean=1.117370e-04, max_abs=1.281270e-01, finite=878538/878538
+[DIAG] Client 29 model: shape=(878538,), norm=1.440550e+01, mean=1.915216e-04, max_abs=1.615320e-01, finite=878538/878538
+[DIAG] Client 0 model: shape=(878538,), norm=1.441608e+01, mean=1.956017e-04, max_abs=1.322541e-01, finite=878538/878538
+[DIAG] Client 88 model: shape=(878538,), norm=1.440456e+01, mean=1.634815e-04, max_abs=1.331002e-01, finite=878538/878538
+[DIAG] Client 73 model: shape=(878538,), norm=1.439820e+01, mean=1.361879e-04, max_abs=1.328084e-01, finite=878538/878538
+[DIAG] Client 60 model: shape=(878538,), norm=1.436718e+01, mean=9.119337e-06, max_abs=1.153846e-01, finite=878538/878538
+[DIAG] Client 46 model: shape=(878538,), norm=1.441250e+01, mean=2.209204e-04, max_abs=1.295207e-01, finite=878538/878538
+[DIAG] Client 9 model: shape=(878538,), norm=1.440530e+01, mean=1.549683e-04, max_abs=1.351349e-01, finite=878538/878538
+[DIAG] Client 79 model: shape=(878538,), norm=1.436781e+01, mean=1.272586e-05, max_abs=1.155691e-01, finite=878538/878538
+[DIAG] Client 62 model: shape=(878538,), norm=1.441694e+01, mean=2.034983e-04, max_abs=1.716765e-01, finite=878538/878538
+[DIAG] Client 48 model: shape=(878538,), norm=1.440949e+01, mean=1.628110e-04, max_abs=1.346606e-01, finite=878538/878538
+[DIAG] Client 52 model: shape=(878538,), norm=1.440933e+01, mean=1.993197e-04, max_abs=1.353743e-01, finite=878538/878538
+[DIAG] Client 12 model: shape=(878538,), norm=1.441683e+01, mean=1.949262e-04, max_abs=2.041042e-01, finite=878538/878538
+[DIAG] Client 99 model: shape=(878538,), norm=1.441633e+01, mean=1.775715e-04, max_abs=1.591656e-01, finite=878538/878538
+[DIAG] Client 15 model: shape=(878538,), norm=1.440837e+01, mean=1.728390e-04, max_abs=1.363251e-01, finite=878538/878538
+[DIAG] Client 27 model: shape=(878538,), norm=1.440839e+01, mean=1.777904e-04, max_abs=1.330502e-01, finite=878538/878538
+[DIAG] Client 87 model: shape=(878538,), norm=1.440036e+01, mean=1.687554e-04, max_abs=1.319389e-01, finite=878538/878538
+[DIAG] Client 92 model: shape=(878538,), norm=1.436857e+01, mean=1.702417e-05, max_abs=1.157485e-01, finite=878538/878538
+[DIAG] Client 28 model: shape=(878538,), norm=1.438813e+01, mean=1.108956e-04, max_abs=1.430803e-01, finite=878538/878538
+[DIAG] Client 20 model: shape=(878538,), norm=1.439959e+01, mean=1.394967e-04, max_abs=1.232445e-01, finite=878538/878538
+[DIAG] Client 18 model: shape=(878538,), norm=1.436885e+01, mean=1.859811e-05, max_abs=1.159834e-01, finite=878538/878538
+[DIAG] Client 38 model: shape=(878538,), norm=1.437111e+01, mean=3.178422e-05, max_abs=1.215226e-01, finite=878538/878538
+[DIAG] Client 45 model: shape=(878538,), norm=1.441486e+01, mean=2.077716e-04, max_abs=1.862724e-01, finite=878538/878538
+[DIAG] Client 44 model: shape=(878538,), norm=1.439964e+01, mean=1.356237e-04, max_abs=1.324651e-01, finite=878538/878538
+[DIAG] Client 23 model: shape=(878538,), norm=1.441273e+01, mean=1.894075e-04, max_abs=1.276062e-01, finite=878538/878538
+[DIAG] Client 31 model: shape=(878538,), norm=1.440964e+01, mean=1.767654e-04, max_abs=1.368387e-01, finite=878538/878538
+[DIAG] Client 70 model: shape=(878538,), norm=1.442004e+01, mean=2.201657e-04, max_abs=1.315094e-01, finite=878538/878538
+[DIAG] Client 53 model: shape=(878538,), norm=1.436740e+01, mean=1.111240e-05, max_abs=1.154292e-01, finite=878538/878538
+[DIAG] Client 7 model: shape=(878538,), norm=1.436831e+01, mean=1.715670e-05, max_abs=1.156630e-01, finite=878538/878538
+[DIAG] Client 40 model: shape=(878538,), norm=1.439195e+01, mean=1.357119e-04, max_abs=1.281109e-01, finite=878538/878538
+[DIAG] Client 76 model: shape=(878538,), norm=1.440631e+01, mean=1.653553e-04, max_abs=1.344607e-01, finite=878538/878538
+[DIAG] Client 84 model: shape=(878538,), norm=1.440535e+01, mean=1.680629e-04, max_abs=1.462621e-01, finite=878538/878538
+[DIAG] Client 75 model: shape=(878538,), norm=1.442075e+01, mean=2.249816e-04, max_abs=1.927856e-01, finite=878538/878538
+[DIAG] Client 86 model: shape=(878538,), norm=1.442813e+01, mean=2.369239e-04, max_abs=1.547189e-01, finite=878538/878538
+[DIAG] Client 10 model: shape=(878538,), norm=1.440546e+01, mean=1.598345e-04, max_abs=1.314320e-01, finite=878538/878538
+[DIAG] Client 34 model: shape=(878538,), norm=1.436813e+01, mean=1.544612e-05, max_abs=1.157615e-01, finite=878538/878538
+[DIAG] Client 21 model: shape=(878538,), norm=1.436883e+01, mean=2.034196e-05, max_abs=1.156341e-01, finite=878538/878538
+[DIAG] Client 56 model: shape=(878538,), norm=1.441614e+01, mean=2.107140e-04, max_abs=1.879399e-01, finite=878538/878538
+[DIAG] Client 43 model: shape=(878538,), norm=1.439132e+01, mean=1.235691e-04, max_abs=1.235285e-01, finite=878538/878538
+[DIAG] Client 97 model: shape=(878538,), norm=1.436830e+01, mean=1.662941e-05, max_abs=1.155996e-01, finite=878538/878538
+[DIAG] Client 13 model: shape=(878538,), norm=1.436804e+01, mean=1.782083e-05, max_abs=1.156406e-01, finite=878538/878538
+[DIAG] Client 11 model: shape=(878538,), norm=1.438506e+01, mean=9.871259e-05, max_abs=1.212314e-01, finite=878538/878538
+[DIAG] Client 63 model: shape=(878538,), norm=1.438922e+01, mean=1.130510e-04, max_abs=1.240023e-01, finite=878538/878538
+[DIAG] Client 25 model: shape=(878538,), norm=1.441109e+01, mean=1.905832e-04, max_abs=1.461949e-01, finite=878538/878538
+[DIAG] Client 61 model: shape=(878538,), norm=1.438880e+01, mean=1.262755e-04, max_abs=1.325729e-01, finite=878538/878538
+[DIAG] Client 37 model: shape=(878538,), norm=1.440664e+01, mean=1.698461e-04, max_abs=1.358727e-01, finite=878538/878538
+[DIAG] Client 16 model: shape=(878538,), norm=1.441159e+01, mean=1.860400e-04, max_abs=1.589176e-01, finite=878538/878538
+[DIAG] Client 82 model: shape=(878538,), norm=1.440484e+01, mean=1.516182e-04, max_abs=1.383399e-01, finite=878538/878538
+[DIAG] Client 98 model: shape=(878538,), norm=1.439217e+01, mean=1.224401e-04, max_abs=1.300547e-01, finite=878538/878538
+[DIAG] Client 47 model: shape=(878538,), norm=1.437046e+01, mean=2.716778e-05, max_abs=1.165096e-01, finite=878538/878538
+[DIAG] Client 68 model: shape=(878538,), norm=1.441118e+01, mean=1.878478e-04, max_abs=1.518599e-01, finite=878538/878538
+[DIAG] Client 5 model: shape=(878538,), norm=1.439880e+01, mean=1.441815e-04, max_abs=1.321911e-01, finite=878538/878538
+[DIAG] Client 35 model: shape=(878538,), norm=1.441552e+01, mean=2.008730e-04, max_abs=1.336508e-01, finite=878538/878538
+[DIAG] Client 59 model: shape=(878538,), norm=1.442836e+01, mean=2.037461e-04, max_abs=1.731098e-01, finite=878538/878538
+[DIAG] Client 94 model: shape=(878538,), norm=1.439595e+01, mean=1.348768e-04, max_abs=1.323079e-01, finite=878538/878538
+[DIAG] Client 67 model: shape=(878538,), norm=1.440502e+01, mean=1.817444e-04, max_abs=1.290917e-01, finite=878538/878538
+[DIAG] Client 14 model: shape=(878538,), norm=1.441128e+01, mean=1.842608e-04, max_abs=1.418833e-01, finite=878538/878538
+[DIAG] Client 57 model: shape=(878538,), norm=1.436902e+01, mean=2.690444e-05, max_abs=1.158209e-01, finite=878538/878538
+[DIAG] Client 66 model: shape=(878538,), norm=1.439069e+01, mean=1.195013e-04, max_abs=1.224314e-01, finite=878538/878538
+[DIAG] Client 24 model: shape=(878538,), norm=1.440619e+01, mean=1.650024e-04, max_abs=1.353602e-01, finite=878538/878538
+[DIAG] Client 83 model: shape=(878538,), norm=1.436882e+01, mean=1.871621e-05, max_abs=1.155825e-01, finite=878538/878538
+[DIAG] Client 41 model: shape=(878538,), norm=1.441200e+01, mean=1.820236e-04, max_abs=1.367033e-01, finite=878538/878538
+[DIAG] Client 89 model: shape=(878538,), norm=1.441095e+01, mean=1.720222e-04, max_abs=1.259019e-01, finite=878538/878538
+[DIAG] Client 64 model: shape=(878538,), norm=1.441148e+01, mean=1.908173e-04, max_abs=1.494639e-01, finite=878538/878538
+[DIAG] Client 71 model: shape=(878538,), norm=1.440513e+01, mean=1.562370e-04, max_abs=1.374795e-01, finite=878538/878538
+========== END CLIENT MODELS ==========
+[DIAG] FedAvg reference update g_FL: shape=(878538,), norm=4.519581e-01, mean=1.700103e-04, max_abs=3.927084e-02, finite=878538/878538
+[DIAG] FedOMG invariant update g_IGD: shape=(878538,), norm=5.273904e-01, mean=1.731826e-04, max_abs=9.215830e-02, finite=878538/878538
+[DIAG] gamma: sum=0.99999994, min=1.73063127e-05, max=9.45059896e-01, objective=1.65896825e-02
+[DIAG] update norm ratio ||g_IGD||/||g_FL||: 1.16690095e+00
+[DIAG] server meta learning rate: 1.0
+
+-------------Round number: 1-------------
+
+Evaluate global model
+Averaged Train Loss: 2.5568
+Averaged Test Accurancy: 0.1001
+Averaged Test AUC: 0.5203
+Std Test Accurancy: 0.2264
+Std Test AUC: 0.2341
+------------------------- time cost ------------------------- 46.98109030723572
+
+========== DIAG: CLIENT MODELS ==========
+Uploaded client IDs: [89, 91, 95, 32, 26, 62, 44, 67, 39, 5, 36, 54, 1, 7, 84, 94, 8, 59, 83, 13, 18, 14, 87, 3, 98, 79, 28, 66, 61, 60, 93, 97, 10, 55, 82, 48, 92, 34, 22, 15, 51, 70, 37, 47, 43, 76, 24, 33, 21, 57, 2, 50, 69, 42, 49, 80, 96, 35, 40, 17, 63, 27, 11, 88, 99, 58, 74, 41, 6, 75, 20, 31, 77, 81, 45, 85, 4, 25, 64, 56, 38, 0, 71, 52, 72, 65, 90, 16, 73, 46, 53, 12, 30, 19, 29, 86, 68, 9, 78, 23]
+Uploaded clients: 100
+[DIAG] Global model before OMG: shape=(878538,), norm=1.439813e+01, mean=1.809774e-04, max_abs=1.304741e-01, finite=878538/878538
+[DIAG] Client 89 model: shape=(878538,), norm=1.443174e+01, mean=2.529938e-04, max_abs=1.376086e-01, finite=878538/878538
+[DIAG] Client 91 model: shape=(878538,), norm=1.441446e+01, mean=2.308983e-04, max_abs=1.380114e-01, finite=878538/878538
+[DIAG] Client 95 model: shape=(878538,), norm=1.442278e+01, mean=2.781136e-04, max_abs=1.380819e-01, finite=878538/878538
+[DIAG] Client 32 model: shape=(878538,), norm=1.442826e+01, mean=2.561224e-04, max_abs=1.458360e-01, finite=878538/878538
+[DIAG] Client 26 model: shape=(878538,), norm=1.443627e+01, mean=2.881738e-04, max_abs=1.440664e-01, finite=878538/878538
+[DIAG] Client 62 model: shape=(878538,), norm=1.443467e+01, mean=2.884576e-04, max_abs=1.458492e-01, finite=878538/878538
+[DIAG] Client 44 model: shape=(878538,), norm=1.441962e+01, mean=2.308174e-04, max_abs=1.421705e-01, finite=878538/878538
+[DIAG] Client 67 model: shape=(878538,), norm=1.442187e+01, mean=2.592755e-04, max_abs=1.416869e-01, finite=878538/878538
+[DIAG] Client 39 model: shape=(878538,), norm=1.443333e+01, mean=2.906490e-04, max_abs=1.551816e-01, finite=878538/878538
+[DIAG] Client 5 model: shape=(878538,), norm=1.441598e+01, mean=2.374020e-04, max_abs=1.408994e-01, finite=878538/878538
+[DIAG] Client 36 model: shape=(878538,), norm=1.442882e+01, mean=2.697003e-04, max_abs=1.465074e-01, finite=878538/878538
+[DIAG] Client 54 model: shape=(878538,), norm=1.442182e+01, mean=2.380565e-04, max_abs=1.389792e-01, finite=878538/878538
+[DIAG] Client 1 model: shape=(878538,), norm=1.441448e+01, mean=2.237464e-04, max_abs=1.412563e-01, finite=878538/878538
+[DIAG] Client 7 model: shape=(878538,), norm=1.440438e+01, mean=2.086374e-04, max_abs=1.330941e-01, finite=878538/878538
+[DIAG] Client 84 model: shape=(878538,), norm=1.442207e+01, mean=2.585563e-04, max_abs=1.461919e-01, finite=878538/878538
+[DIAG] Client 94 model: shape=(878538,), norm=1.441524e+01, mean=2.306726e-04, max_abs=1.414586e-01, finite=878538/878538
+[DIAG] Client 8 model: shape=(878538,), norm=1.441444e+01, mean=2.453335e-04, max_abs=1.387712e-01, finite=878538/878538
+[DIAG] Client 59 model: shape=(878538,), norm=1.444538e+01, mean=2.835590e-04, max_abs=1.854192e-01, finite=878538/878538
+[DIAG] Client 83 model: shape=(878538,), norm=1.440609e+01, mean=2.090448e-04, max_abs=1.304886e-01, finite=878538/878538
+[DIAG] Client 13 model: shape=(878538,), norm=1.440551e+01, mean=2.144019e-04, max_abs=1.331848e-01, finite=878538/878538
+[DIAG] Client 18 model: shape=(878538,), norm=1.440799e+01, mean=2.120598e-04, max_abs=1.343894e-01, finite=878538/878538
+[DIAG] Client 14 model: shape=(878538,), norm=1.443010e+01, mean=2.675474e-04, max_abs=1.410716e-01, finite=878538/878538
+[DIAG] Client 87 model: shape=(878538,), norm=1.442498e+01, mean=2.622962e-04, max_abs=1.419857e-01, finite=878538/878538
+[DIAG] Client 3 model: shape=(878538,), norm=1.443041e+01, mean=2.888015e-04, max_abs=1.469402e-01, finite=878538/878538
+[DIAG] Client 98 model: shape=(878538,), norm=1.441431e+01, mean=2.330256e-04, max_abs=1.393644e-01, finite=878538/878538
+[DIAG] Client 79 model: shape=(878538,), norm=1.440458e+01, mean=2.008052e-04, max_abs=1.326721e-01, finite=878538/878538
+[DIAG] Client 28 model: shape=(878538,), norm=1.441904e+01, mean=2.510151e-04, max_abs=1.363987e-01, finite=878538/878538
+[DIAG] Client 66 model: shape=(878538,), norm=1.441708e+01, mean=2.375336e-04, max_abs=1.349043e-01, finite=878538/878538
+[DIAG] Client 61 model: shape=(878538,), norm=1.441381e+01, mean=2.406177e-04, max_abs=1.367948e-01, finite=878538/878538
+[DIAG] Client 60 model: shape=(878538,), norm=1.440194e+01, mean=1.893984e-04, max_abs=1.318705e-01, finite=878538/878538
+[DIAG] Client 93 model: shape=(878538,), norm=1.441066e+01, mean=2.184901e-04, max_abs=1.364963e-01, finite=878538/878538
+[DIAG] Client 97 model: shape=(878538,), norm=1.440435e+01, mean=2.059366e-04, max_abs=1.329578e-01, finite=878538/878538
+[DIAG] Client 10 model: shape=(878538,), norm=1.442375e+01, mean=2.563686e-04, max_abs=1.450705e-01, finite=878538/878538
+[DIAG] Client 55 model: shape=(878538,), norm=1.443486e+01, mean=2.770224e-04, max_abs=1.462140e-01, finite=878538/878538
+[DIAG] Client 82 model: shape=(878538,), norm=1.442393e+01, mean=2.542807e-04, max_abs=1.443647e-01, finite=878538/878538
+[DIAG] Client 48 model: shape=(878538,), norm=1.443109e+01, mean=2.420054e-04, max_abs=1.429971e-01, finite=878538/878538
+[DIAG] Client 92 model: shape=(878538,), norm=1.440770e+01, mean=2.137457e-04, max_abs=1.339578e-01, finite=878538/878538
+[DIAG] Client 34 model: shape=(878538,), norm=1.440509e+01, mean=1.968288e-04, max_abs=1.341273e-01, finite=878538/878538
+[DIAG] Client 22 model: shape=(878538,), norm=1.444141e+01, mean=2.678391e-04, max_abs=1.433821e-01, finite=878538/878538
+[DIAG] Client 15 model: shape=(878538,), norm=1.442182e+01, mean=2.534363e-04, max_abs=1.422507e-01, finite=878538/878538
+[DIAG] Client 51 model: shape=(878538,), norm=1.441089e+01, mean=2.318419e-04, max_abs=1.338775e-01, finite=878538/878538
+[DIAG] Client 70 model: shape=(878538,), norm=1.443328e+01, mean=2.786581e-04, max_abs=1.394251e-01, finite=878538/878538
+[DIAG] Client 37 model: shape=(878538,), norm=1.442210e+01, mean=2.526069e-04, max_abs=1.481422e-01, finite=878538/878538
+[DIAG] Client 47 model: shape=(878538,), norm=1.441061e+01, mean=2.185087e-04, max_abs=1.353831e-01, finite=878538/878538
+[DIAG] Client 43 model: shape=(878538,), norm=1.442006e+01, mean=2.391868e-04, max_abs=1.372724e-01, finite=878538/878538
+[DIAG] Client 76 model: shape=(878538,), norm=1.442052e+01, mean=2.496334e-04, max_abs=1.476881e-01, finite=878538/878538
+[DIAG] Client 24 model: shape=(878538,), norm=1.442712e+01, mean=2.483182e-04, max_abs=1.440388e-01, finite=878538/878538
+[DIAG] Client 33 model: shape=(878538,), norm=1.441708e+01, mean=2.462757e-04, max_abs=1.382836e-01, finite=878538/878538
+[DIAG] Client 21 model: shape=(878538,), norm=1.440613e+01, mean=2.108853e-04, max_abs=1.329640e-01, finite=878538/878538
+[DIAG] Client 57 model: shape=(878538,), norm=1.440432e+01, mean=2.125548e-04, max_abs=1.323017e-01, finite=878538/878538
+[DIAG] Client 2 model: shape=(878538,), norm=1.442257e+01, mean=2.507080e-04, max_abs=1.432405e-01, finite=878538/878538
+[DIAG] Client 50 model: shape=(878538,), norm=1.442769e+01, mean=2.626463e-04, max_abs=1.356499e-01, finite=878538/878538
+[DIAG] Client 69 model: shape=(878538,), norm=1.442065e+01, mean=2.602555e-04, max_abs=1.380748e-01, finite=878538/878538
+[DIAG] Client 42 model: shape=(878538,), norm=1.440595e+01, mean=2.196492e-04, max_abs=1.307613e-01, finite=878538/878538
+[DIAG] Client 49 model: shape=(878538,), norm=1.440419e+01, mean=1.997545e-04, max_abs=1.327597e-01, finite=878538/878538
+[DIAG] Client 80 model: shape=(878538,), norm=1.441562e+01, mean=2.329412e-04, max_abs=1.370072e-01, finite=878538/878538
+[DIAG] Client 96 model: shape=(878538,), norm=1.441996e+01, mean=2.539871e-04, max_abs=1.485160e-01, finite=878538/878538
+[DIAG] Client 35 model: shape=(878538,), norm=1.443761e+01, mean=2.763611e-04, max_abs=1.432863e-01, finite=878538/878538
+[DIAG] Client 40 model: shape=(878538,), norm=1.441594e+01, mean=2.432750e-04, max_abs=1.424986e-01, finite=878538/878538
+[DIAG] Client 17 model: shape=(878538,), norm=1.444131e+01, mean=2.797644e-04, max_abs=1.518440e-01, finite=878538/878538
+[DIAG] Client 63 model: shape=(878538,), norm=1.441342e+01, mean=2.235926e-04, max_abs=1.352350e-01, finite=878538/878538
+[DIAG] Client 27 model: shape=(878538,), norm=1.442043e+01, mean=2.438916e-04, max_abs=1.433756e-01, finite=878538/878538
+[DIAG] Client 11 model: shape=(878538,), norm=1.440835e+01, mean=2.122425e-04, max_abs=1.317782e-01, finite=878538/878538
+[DIAG] Client 88 model: shape=(878538,), norm=1.441799e+01, mean=2.441611e-04, max_abs=1.419569e-01, finite=878538/878538
+[DIAG] Client 99 model: shape=(878538,), norm=1.443162e+01, mean=2.493439e-04, max_abs=1.420963e-01, finite=878538/878538
+[DIAG] Client 58 model: shape=(878538,), norm=1.440150e+01, mean=1.902721e-04, max_abs=1.316427e-01, finite=878538/878538
+[DIAG] Client 74 model: shape=(878538,), norm=1.441411e+01, mean=2.456703e-04, max_abs=1.370633e-01, finite=878538/878538
+[DIAG] Client 41 model: shape=(878538,), norm=1.442442e+01, mean=2.596195e-04, max_abs=1.475869e-01, finite=878538/878538
+[DIAG] Client 6 model: shape=(878538,), norm=1.443897e+01, mean=2.824887e-04, max_abs=1.476637e-01, finite=878538/878538
+[DIAG] Client 75 model: shape=(878538,), norm=1.443269e+01, mean=2.955884e-04, max_abs=1.491635e-01, finite=878538/878538
+[DIAG] Client 20 model: shape=(878538,), norm=1.442130e+01, mean=2.364126e-04, max_abs=1.331966e-01, finite=878538/878538
+[DIAG] Client 31 model: shape=(878538,), norm=1.442985e+01, mean=2.568650e-04, max_abs=1.445025e-01, finite=878538/878538
+[DIAG] Client 77 model: shape=(878538,), norm=1.441815e+01, mean=2.622904e-04, max_abs=1.425321e-01, finite=878538/878538
+[DIAG] Client 81 model: shape=(878538,), norm=1.442239e+01, mean=2.470117e-04, max_abs=1.346035e-01, finite=878538/878538
+[DIAG] Client 45 model: shape=(878538,), norm=1.442806e+01, mean=2.818542e-04, max_abs=1.449262e-01, finite=878538/878538
+[DIAG] Client 85 model: shape=(878538,), norm=1.443323e+01, mean=2.663559e-04, max_abs=1.448964e-01, finite=878538/878538
+[DIAG] Client 4 model: shape=(878538,), norm=1.441567e+01, mean=2.412067e-04, max_abs=1.353519e-01, finite=878538/878538
+[DIAG] Client 25 model: shape=(878538,), norm=1.442633e+01, mean=2.719879e-04, max_abs=1.519279e-01, finite=878538/878538
+[DIAG] Client 64 model: shape=(878538,), norm=1.442409e+01, mean=2.661576e-04, max_abs=1.442482e-01, finite=878538/878538
+[DIAG] Client 56 model: shape=(878538,), norm=1.442905e+01, mean=2.852554e-04, max_abs=1.461429e-01, finite=878538/878538
+[DIAG] Client 38 model: shape=(878538,), norm=1.440850e+01, mean=2.210908e-04, max_abs=1.344829e-01, finite=878538/878538
+[DIAG] Client 0 model: shape=(878538,), norm=1.443046e+01, mean=2.533463e-04, max_abs=1.366605e-01, finite=878538/878538
+[DIAG] Client 71 model: shape=(878538,), norm=1.443084e+01, mean=2.550790e-04, max_abs=1.483903e-01, finite=878538/878538
+[DIAG] Client 52 model: shape=(878538,), norm=1.443228e+01, mean=2.847459e-04, max_abs=1.504015e-01, finite=878538/878538
+[DIAG] Client 72 model: shape=(878538,), norm=1.442403e+01, mean=2.635735e-04, max_abs=1.463101e-01, finite=878538/878538
+[DIAG] Client 65 model: shape=(878538,), norm=1.442924e+01, mean=2.660001e-04, max_abs=1.401691e-01, finite=878538/878538
+[DIAG] Client 90 model: shape=(878538,), norm=1.440623e+01, mean=2.048000e-04, max_abs=1.343386e-01, finite=878538/878538
+[DIAG] Client 16 model: shape=(878538,), norm=1.443197e+01, mean=2.786245e-04, max_abs=1.422370e-01, finite=878538/878538
+[DIAG] Client 73 model: shape=(878538,), norm=1.441573e+01, mean=2.333781e-04, max_abs=1.413706e-01, finite=878538/878538
+[DIAG] Client 46 model: shape=(878538,), norm=1.442395e+01, mean=2.821253e-04, max_abs=1.382077e-01, finite=878538/878538
+[DIAG] Client 53 model: shape=(878538,), norm=1.440637e+01, mean=2.038667e-04, max_abs=1.340632e-01, finite=878538/878538
+[DIAG] Client 12 model: shape=(878538,), norm=1.442693e+01, mean=2.768611e-04, max_abs=1.529102e-01, finite=878538/878538
+[DIAG] Client 30 model: shape=(878538,), norm=1.441946e+01, mean=2.501265e-04, max_abs=1.393388e-01, finite=878538/878538
+[DIAG] Client 19 model: shape=(878538,), norm=1.442577e+01, mean=2.692195e-04, max_abs=1.486360e-01, finite=878538/878538
+[DIAG] Client 29 model: shape=(878538,), norm=1.441906e+01, mean=2.702842e-04, max_abs=1.531433e-01, finite=878538/878538
+[DIAG] Client 86 model: shape=(878538,), norm=1.443930e+01, mean=2.870708e-04, max_abs=1.410167e-01, finite=878538/878538
+[DIAG] Client 68 model: shape=(878538,), norm=1.442284e+01, mean=2.626794e-04, max_abs=1.461641e-01, finite=878538/878538
+[DIAG] Client 9 model: shape=(878538,), norm=1.442590e+01, mean=2.519634e-04, max_abs=1.471773e-01, finite=878538/878538
+[DIAG] Client 78 model: shape=(878538,), norm=1.441190e+01, mean=2.295923e-04, max_abs=1.397279e-01, finite=878538/878538
+[DIAG] Client 23 model: shape=(878538,), norm=1.442873e+01, mean=2.610714e-04, max_abs=1.381929e-01, finite=878538/878538
+========== END CLIENT MODELS ==========
+[DIAG] FedAvg reference update g_FL: shape=(878538,), norm=2.479496e-01, mean=8.170222e-05, max_abs=2.304009e-02, finite=878538/878538
+[DIAG] FedOMG invariant update g_IGD: shape=(878538,), norm=2.753714e-01, mean=9.802016e-05, max_abs=2.891134e-02, finite=878538/878538
+[DIAG] gamma: sum=0.99999988, min=1.34064139e-05, max=9.94339645e-01, objective=3.29715237e-02
+[DIAG] update norm ratio ||g_IGD||/||g_FL||: 1.11059414e+00
+[DIAG] server meta learning rate: 1.0
+
+-------------Round number: 2-------------
+
+Evaluate global model
+Averaged Train Loss: 2.8946
+Averaged Test Accurancy: 0.1293
+Averaged Test AUC: 0.5256
+Std Test Accurancy: 0.2218
+Std Test AUC: 0.2319
+------------------------- time cost ------------------------- 36.10142183303833
+
+Best accuracy.
+0.1292575838211815
+
+Average time cost per round.
+41.541256070137024
+Results saved to: /home/cjq/Project/FedOMG/results/Cifar10_FedOMG_smoke_cifar10_a01_fedomg_gpu3_0.h5
+Global model saved to: /home/cjq/Project/FedOMG/models/Cifar10/FedOMG_server_seed_9001.pt
+
+Average time cost: 116.79s.
+Loaded Cifar10_FedOMG_smoke_cifar10_a01_fedomg_gpu3_0: 3 evaluation points
+Best accuracy across runs: 12.93% ± 0.00%
+Final accuracy across runs: 12.93% ± 0.00%
+All done!
+
+Storage on meta
+-------------------------------------------------------------------------------
+Total Tensors: 20 	Used Memory: 0.00B
+-------------------------------------------------------------------------------
+
+Storage on cuda:0
+-------------------------------------------------------------------------------
+Total Tensors: 354050814 	Used Memory: 1015.82M
+The allocated memory on cuda:0: 1.01G
+Memory differs due to the matrix alignment or invisible gradient buffer tensors
+-------------------------------------------------------------------------------
